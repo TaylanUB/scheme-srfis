@@ -39,3 +39,14 @@ R7RS SRFI implementations
 
 - Be careful about the copyright and licensing of SRFI reference
   implementations when you plan to use them.
+
+- When using a reference implementation, include the exact source code
+  you started with in a file srfi-x.upstream.scm, with copyright etc.
+  added as comments at the top if it wasn't there already.  For
+  modifications, copy the file to srfi-x.body.scm and use that.  This
+  is because some SRFI reference implementations change ad-hoc without
+  version control; we want to know what version we forked.
+
+- Don't mix library declarations and code; put library declarations in
+  an srfi-x.scm file, and include the main code from a corresponding
+  srfi-x.body.scm or srfi-x.upstream.scm file.
