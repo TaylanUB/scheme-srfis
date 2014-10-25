@@ -4,7 +4,7 @@ R7RS SRFI implementations
 - SRFI are at: <http://srfi.schemers.org/>
 
 - All implementations should be valid R7RS-small libraries for now.
-  When it's finished, we will move to an R7RS-large core/base.
+  We will move to an R7RS-large core/base when possible.
 
 - Feel free to assume sane platform properties like a full numeric
   tower (excluding exact complex numbers), Unicode, etc. and keep
