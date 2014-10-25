@@ -54,3 +54,15 @@ Using reference implementations
   know what version we forked.
 
 - Be careful about the copyright and licensing.
+
+SRFI-specific notes
+===================
+
+SRFI-64
+-------
+
+- `test-read-eval-string`: This now takes an optional `env` argument
+  to specify in what environment to evaluate.  Passing `#f` will
+  explicitly attempt to call `eval` with a single argument, which is
+  an error in R7RS.  Leaving the argument out will try to use a sane
+  platform-specific default but falls back to `#f`.
