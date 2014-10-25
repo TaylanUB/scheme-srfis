@@ -16,20 +16,20 @@ R7RS SRFI implementations
     If you care about maximal portability, patches welcome; code won't
     be rejected due to liberal use of `cond-expand` etc.
 
+- Feel free to use other SRFI in your SRFI implementation; though of
+  course it's best if that SRFI is found in this repository as well.
+  Still, rely on an SRFI if the alternative is using horrid hacks.
+
 - Write test suites in SRFI-64: <http://srfi.schemers.org/srfi-64/>
-
-- You can probably often just wrap a reference implementation in an
-  R7RS library, but pay attention to the following point:
-
-- Do make good use of R7RS features, as well as having SRFIs rely on
-  each other, to avoid dirty hacky things like redefining type
-  predicates (it's mostly illegal anyway now), liberal use of global
-  variables (use parameters instead), etc. etc.
 
 - For those SRFIs which cannot be implemented in pure R7RS, it's fine
   to write libraries that just wrap features of specific platforms via
   `cond-expand` and thus at least work across several platforms even
   if not all R7RS implementations.
+
+- Don't mix library declarations and code; put library declarations in
+  an srfi-x.scm file, and include the main code from a corresponding
+  srfi-x.body.scm or srfi-x.upstream.scm file.
 
 - The preferred license is the LGPL version 3.  Refrain from GPL and
   the like; we'd like it if Scheme platforms shipped straight with
@@ -37,16 +37,20 @@ R7RS SRFI implementations
   forcing whole Scheme programs to be GPL'ed just for using these SRFI
   implementations would also be overboard.
 
-- Be careful about the copyright and licensing of SRFI reference
-  implementations when you plan to use them.
+Using reference implementations
+-------------------------------
 
-- When using a reference implementation, include the exact source code
-  you started with in a file srfi-x.upstream.scm, with copyright etc.
-  added as comments at the top if it wasn't there already.  For
-  modifications, copy the file to srfi-x.body.scm and use that.  This
-  is because some SRFI reference implementations change ad-hoc without
-  version control; we want to know what version we forked.
+- You can probably often just wrap a reference implementation in an
+  R7RS library, but do modify them to make good use of R7RS features,
+  to avoid dirty hacky things like redefining type predicates (it's
+  mostly illegal anyway now), liberal use of global variables (use
+  parameters instead), etc. etc.
 
-- Don't mix library declarations and code; put library declarations in
-  an srfi-x.scm file, and include the main code from a corresponding
-  srfi-x.body.scm or srfi-x.upstream.scm file.
+- Include the upstream source code you started with in a file named
+  srfi-x.upstream.scm, with copyright etc. added as comments at the
+  top if it wasn't there already.  For modifications, copy the file to
+  srfi-x.body.scm and use that.  This is because some SRFI reference
+  implementations change ad-hoc without version control; we want to
+  know what version we forked.
+
+- Be careful about the copyright and licensing.
