@@ -50,16 +50,16 @@ Concrete conventions
 
   - exports
   - imports
-  - optional auxiliary code in a `begin`
+  - auxiliary code in a `begin` if the main body is in an `include`
   - the main body as an `include` or `begin`
 
 - If an export or import list doesn't fit in one line, then put a
   newline directly after the `export` or `import` keyword, i.e., don't
   put any export or import specs on the same line as the keyword.
 
-- Unless there is only a very small amount of code, split the main
-  body of the library into a file named `n.body.scm` and include that
-  from `n.scm`.
+- If there is a substantial amount of code such that the indentation
+  of the library form is an annoyance, split the main body of the
+  library into a file named `n.body.scm` and `include` that.
 
 - When using a reference implementation, put the original source code
   in a file `n.upstream.scm`, and copy it to `n.body.scm` if you will
