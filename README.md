@@ -149,13 +149,13 @@ you pay attention.
 - SRFI-7: r7rs (define-library)
 - SRFI-8: UNTESTED
 - SRFI-9: r7rs
-- SRFI-10:
-- SRFI-11:
+- SRFI-10: platform
+- SRFI-11: r7rs
 - SRFI-12: withdrawn
 - SRFI-13:
 - SRFI-14:
 - SRFI-15: withdrawn
-- SRFI-16:
+- SRFI-16: r7rs
 - SRFI-17:
 - SRFI-18:
 - SRFI-19:
