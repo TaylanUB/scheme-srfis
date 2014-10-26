@@ -1,4 +1,4 @@
-(define-library (srfi srfi-1)
+(define-library (srfi 1)
   (export
    xcons list-tabulate cons*
    proper-list? circular-list? dotted-list? not-pair? null-list? list=
@@ -34,7 +34,7 @@
   (import
    (scheme base)
    (scheme cxr)
-   (srfi srfi-8))
+   (srfi 8))
   (begin
     (define-syntax let-optionals
       (syntax-rules ()
@@ -53,4 +53,4 @@
            (if (pair? args)
                (car args)
                default))))))
-  (include "srfi-1.body.scm"))
+  (include "1.body.scm"))

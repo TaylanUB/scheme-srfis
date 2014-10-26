@@ -1,4 +1,4 @@
-(define-library (srfi srfi-64)
+(define-library (srfi 64)
   (cond-expand
    (kawa (export %test-begin))
    (else (export test-begin)))
@@ -46,5 +46,5 @@
    (scheme file)
    (scheme read)
    (scheme write)
-   (srfi srfi-35))
-  (include "srfi-64.body.scm"))
+   (srfi 35))
+  (include "64.body.scm"))

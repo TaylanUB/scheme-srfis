@@ -19,7 +19,7 @@
 ;; OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 ;; SOFTWARE.
 
-(define-library (srfi srfi-8)
+(define-library (srfi 8)
   (export receive)
   (import (scheme base))
   (begin

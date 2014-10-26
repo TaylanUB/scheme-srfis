@@ -1,4 +1,4 @@
-(define-library (srfi srfi-35)
+(define-library (srfi 35)
   (export
    make-condition-type
    condition-type?
@@ -17,5 +17,5 @@
    )
   (import
    (scheme base)
-   (srfi srfi-1))
-  (include "srfi-35.upstream.scm"))
+   (srfi 1))
+  (include "35.upstream.scm"))

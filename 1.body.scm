@@ -8,9 +8,9 @@
 ;;;
 ;;; Made an R7RS library by Taylan Ulrich Bayırlı/Kammer, Copyright (c) 2014.
 
-;;; See srfi-1.upstream.scm in the same repository for a bunch of comments which
-;;; I removed here because what they document does not necessarily correspond
-;;; with the code anymore.  Diff with the same file to see changes in the code.
+;;; See 1.upstream.scm in the same repository for a bunch of comments which I
+;;; removed here because what they document does not necessarily correspond with
+;;; the code anymore.  Diff with the same file to see changes in the code.
 
 ;;; Constructors
 ;;;;;;;;;;;;;;;;
