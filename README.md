@@ -53,6 +53,9 @@ Concrete conventions
   - auxiliary code in a `begin` if the main body is in an `include`
   - the main body as an `include` or `begin`
 
+- When there are many exports, put the closing parenthesis of the
+  export form on its own line.
+
 - If an export or import list doesn't fit in one line, then put a
   newline directly after the `export` or `import` keyword, i.e., don't
   put any export or import specs on the same line as the keyword.
