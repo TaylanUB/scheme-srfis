@@ -21,6 +21,8 @@ show.  Therefore:
   hacks.
 
 - Write test suites in SRFI-64: <http://srfi.schemers.org/srfi-64/>
+  It's also fine to use any ad-hoc test suites found within reference
+  implementations though, like in SRFI-2.
 
 - For those SRFIs which cannot be implemented in pure R7RS, it's fine
   to write libraries that just wrap features of specific platforms via
@@ -69,6 +71,9 @@ Concrete conventions
   make modifications.  This is because some reference implementations
   change ad-hoc without version control; we want to know what version
   we forked.
+
+- Put test suites into a file named `n.test.scm`.  These should be
+  R7RS programs, but not libraries.
 
 - Follow Riastradh's Lisp Style Rules for new code:
   <http://mumble.net/~campbell/scheme/style.txt>
@@ -127,7 +132,7 @@ with them yet.)
 
 - SRFI-0: platform
 - SRFI-1: UNTESTED
-- SRFI-2: UNTESTED
+- SRFI-2: check
 - SRFI-3: withdrawn
 - SRFI-4: platform
 - SRFI-5: UNTESTED
