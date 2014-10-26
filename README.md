@@ -93,3 +93,133 @@ SRFI-64
   explicitly attempt to call `eval` with a single argument, which is
   an error in R7RS.  Leaving the argument out will try to use a sane
   platform-specific default but falls back to `#f`.
+
+Progress
+========
+
+All SRFI are listed here, and marked with one of: nothing, meaning it
+has yet to be looked into; "withdrawn," meaning it's a withdrawn SRFI;
+"platform," meaning it must or ought to be implemented at the platform
+level; "UNTESTED," meaning it lacks a test-suite; "DRAFT," meaning
+it's still in draft status; and "check," meaning it's implemented and
+passes its test-suite.
+
+(UNTESTED and DRAFT are capitalized to emphasize that we're not done
+with them yet.)
+
+- SRFI-0: platform
+- SRFI-1: UNTESTED
+- SRFI-2:
+- SRFI-3: withdrawn
+- SRFI-4: platform
+- SRFI-5:
+- SRFI-6:
+- SRFI-7:
+- SRFI-8: UNTESTED
+- SRFI-9:
+- SRFI-10:
+- SRFI-11:
+- SRFI-12: withdrawn
+- SRFI-13:
+- SRFI-14:
+- SRFI-15: withdrawn
+- SRFI-16:
+- SRFI-17:
+- SRFI-18:
+- SRFI-19:
+- SRFI-20: withdrawn
+- SRFI-21:
+- SRFI-22:
+- SRFI-23:
+- SRFI-24: withdrawn
+- SRFI-25:
+- SRFI-26:
+- SRFI-27:
+- SRFI-28:
+- SRFI-29:
+- SRFI-30:
+- SRFI-31:
+- SRFI-32: withdrawn
+- SRFI-33: withdrawn
+- SRFI-34:
+- SRFI-35: UNTESTED
+- SRFI-36:
+- SRFI-37:
+- SRFI-38:
+- SRFI-39:
+- SRFI-40:
+- SRFI-41:
+- SRFI-42:
+- SRFI-43:
+- SRFI-44:
+- SRFI-45:
+- SRFI-46:
+- SRFI-47:
+- SRFI-48:
+- SRFI-49:
+- SRFI-50: withdrawn
+- SRFI-51:
+- SRFI-52: withdrawn
+- SRFI-53: withdrawn
+- SRFI-54:
+- SRFI-55:
+- SRFI-56: withdrawn
+- SRFI-57:
+- SRFI-58:
+- SRFI-59:
+- SRFI-60:
+- SRFI-61:
+- SRFI-62:
+- SRFI-63:
+- SRFI-64: UNTESTED
+- SRFI-65: withdrawn
+- SRFI-66:
+- SRFI-67:
+- SRFI-68: withdrawn
+- SRFI-69:
+- SRFI-70:
+- SRFI-71:
+- SRFI-72:
+- SRFI-73: withdrawn
+- SRFI-74:
+- SRFI-75: withdrawn
+- SRFI-76: withdrawn
+- SRFI-77: withdrawn
+- SRFI-78:
+- SRFI-79: withdrawn
+- SRFI-80: withdrawn
+- SRFI-81: withdrawn
+- SRFI-82: withdrawn
+- SRFI-83: withdrawn
+- SRFI-84: withdrawn
+- SRFI-85: withdrawn
+- SRFI-86:
+- SRFI-87:
+- SRFI-88:
+- SRFI-89:
+- SRFI-90:
+- SRFI-91: withdrawn
+- SRFI-92: withdrawn
+- SRFI-93: withdrawn
+- SRFI-94:
+- SRFI-95:
+- SRFI-96:
+- SRFI-97:
+- SRFI-98:
+- SRFI-99:
+- SRFI-100:
+- SRFI-101:
+- SRFI-102: withdrawn
+- SRFI-103: withdrawn
+- SRFI-104: withdrawn
+- SRFI-105:
+- SRFI-106:
+- SRFI-107:
+- SRFI-108:
+- SRFI-109:
+- SRFI-110:
+- SRFI-111:
+- SRFI-112: DRAFT
+- SRFI-113: DRAFT
+- SRFI-114:
+- SRFI-115:
