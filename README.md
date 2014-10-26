@@ -112,7 +112,7 @@ with them yet.)
 - SRFI-2:
 - SRFI-3: withdrawn
 - SRFI-4: platform
-- SRFI-5:
+- SRFI-5: UNTESTED
 - SRFI-6:
 - SRFI-7:
 - SRFI-8: UNTESTED
