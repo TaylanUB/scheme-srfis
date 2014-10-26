@@ -67,6 +67,9 @@ Concrete conventions
   change ad-hoc without version control; we want to know what version
   we forked.
 
+- Follow Riastradh's Lisp Style Rules for new code:
+  <http://mumble.net/~campbell/scheme/style.txt>
+
 Using reference implementations
 -------------------------------
 
