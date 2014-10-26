@@ -43,8 +43,11 @@ Concrete conventions
   The library is correspondingly named `(srfi n)`.
 
 - The order of things in a library declaration, after the name, is:
-  1. exports, 2. imports, 3. optional auxiliary code in a `begin`,
-  4. the main body as an `include` or `begin`.
+
+  - exports
+  - imports
+  - optional auxiliary code in a `begin`
+  - the main body as an `include` or `begin`
 
 - If an export or import list doesn't fit in one line, then put a
   newline directly after the `export` or `import` keyword, i.e., don't
