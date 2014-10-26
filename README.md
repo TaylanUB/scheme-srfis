@@ -120,15 +120,24 @@ SRFI-64
 Progress
 ========
 
-All SRFI are listed here, and marked with one of: nothing, meaning it
-has yet to be looked into; "withdrawn," meaning it's a withdrawn SRFI;
-"platform," meaning it must or ought to be implemented at the platform
-level; "UNTESTED," meaning it lacks a test-suite; "DRAFT," meaning
-it's still in draft status; and "check," meaning it's implemented and
-passes its test-suite.
+All SRFI are listed here, and marked with one of the following:
 
-(UNTESTED and DRAFT are capitalized to emphasize that we're not done
-with them yet.)
+- (empty): Has yet to be looked into.
+- withdrawn: It's a withdrawn SRFI.
+- platform: Ought to be implemented at the platform level.
+- r7rs: Subsumed by R7RS in some way.
+- UNTESTED: Yet lacks a test-suite.
+- DRAFT: Still in draft status.
+- check: Implemented and passes its test-suite.
+
+UNTESTED and DRAFT are capitalized to emphasize that we're not done
+with them yet; all other non-empty tags mean we're done with it.
+
+The r7rs tag can be vague.  In the simplest case the SRFI is adopted
+as-is in R7RS.  Sometimes there are minor tweaks.  Sometimes the same
+essential functionality is provided in a different way in R7RS; a good
+example might be SRFI-7, though it's equivalent to `define-library` if
+you pay attention.
 
 - SRFI-0: platform
 - SRFI-1: UNTESTED
@@ -136,10 +145,10 @@ with them yet.)
 - SRFI-3: withdrawn
 - SRFI-4: platform
 - SRFI-5: UNTESTED
-- SRFI-6:
-- SRFI-7:
+- SRFI-6: r7rs
+- SRFI-7: r7rs (define-library)
 - SRFI-8: UNTESTED
-- SRFI-9:
+- SRFI-9: r7rs
 - SRFI-10:
 - SRFI-11:
 - SRFI-12: withdrawn
