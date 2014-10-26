@@ -88,6 +88,18 @@ Using reference implementations
 SRFI-specific notes
 ===================
 
+SRFI-2
+------
+
+- `and-let*`: The author of this SRFI thought that `let*` is supposed
+  to error when the same identifier is bound multiple times in
+  sequential clauses, and specified `and-let*` to do the same; it was
+  in fact an ambiguity prior to R6RS what `let*` should do, and has
+  been clarified since R6RS that it should allow sequential repeated
+  bindings.  Racket's, Guile's, and Chibi's SRFI-2 implementations do
+  allow it, and it's a lot easier to implement too, hence our
+  implementation allows it as well.
+
 SRFI-64
 -------
 
