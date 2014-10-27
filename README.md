@@ -37,6 +37,49 @@ show.  Therefore:
   forcing whole Scheme programs to be GPL'ed just for using these SRFI
   implementations would also be overboard.
 
+Platform expectations
+---------------------
+
+As explained above, we expect some basic maturity and feature richness
+from platforms.  So far this is not documented in any more detail, but
+it should be something along the lines of:
+
+<http://trac.sacrideo.us/wg/wiki/MandatoryDocket>
+
+If a library in this repository doesn't work on your preferred Scheme
+platform, file a bug report.  If it contains a working patch it will
+most likely be accepted; otherwise it might get rejected on the
+grounds that the mentioned Scheme platform is not suitable.
+
+The author of this repository uses Chibi to test the libraries.
+Creating a symlink `n.sld` to any file `n.scm` and *prepending* the
+path to the *parent* directory of this repository to the load-path of
+Chibi (via the -I flag) will make the implementations here override
+any native SRFI implementations of Chibi.
+
+Other than Chibi, the following platforms are explicitly intended to
+be supported once they implement R7RS:
+
+- Racket
+- Guile
+- Chicken
+- Gauche
+- Gambit
+- Larceny
+- Bigloo
+- Kawa
+- Chez
+
+The following do not intend to support R7RS, for various reasons:
+
+- MIT/GNU Scheme
+- Scheme48
+- Stalin
+- TinyScheme
+
+Source:
+<http://lists.scheme-reports.org/pipermail/scheme-reports/2011-October/001595.html>
+
 Concrete conventions
 --------------------
 
