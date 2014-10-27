@@ -217,7 +217,7 @@ you pay attention.
 - SRFI-57:
 - SRFI-58:
 - SRFI-59:
-- SRFI-60:
+- SRFI-60: UNTESTED
 - SRFI-61:
 - SRFI-62:
 - SRFI-63:
