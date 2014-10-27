@@ -232,7 +232,7 @@ you pay attention.
 - SRFI-28: UNTESTED
 - SRFI-29:
 - SRFI-30: r7rs
-- SRFI-31:
+- SRFI-31: check
 - SRFI-32: withdrawn
 - SRFI-33: withdrawn
 - SRFI-34: r7rs
