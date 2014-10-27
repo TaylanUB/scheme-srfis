@@ -55,22 +55,23 @@ Concrete conventions
   - auxiliary code in a `begin` if the main body is in an `include`
   - the main body as an `include` or `begin`
 
-- When there are many exports, put the closing parenthesis of the
-  export form on its own line.
-
 - If an export or import list doesn't fit in one line, then put a
   newline directly after the `export` or `import` keyword, i.e., don't
   put any export or import specs on the same line as the keyword.
+
+- When there are many exports, put the closing parenthesis of the
+  export form on its own line.  Don't do this for imports.
 
 - If there is a substantial amount of code such that the indentation
   of the library form is an annoyance, split the main body of the
   library into a file named `n.body.scm` and `include` that.
 
-- When using a reference implementation, put the original source code
-  in a file `n.upstream.scm`, and copy it to `n.body.scm` if you will
-  make modifications.  This is because some reference implementations
-  change ad-hoc without version control; we want to know what version
-  we forked.
+- When using a reference implementation with a substantial amount of
+  code, put the original source code in a file `n.upstream.scm`, and
+  do not edit that file.  `include` directly that if no changes are
+  needed; otherwise copy it to `n.body.scm` and make changes there.
+  This is because some reference implementations change ad-hoc without
+  version control; we want to know what version we forked.
 
 - Put test suites into a file named `n.test.scm`.  These should be
   R7RS programs, but not libraries.
