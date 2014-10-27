@@ -313,7 +313,8 @@ you pay attention.
 - SRFI-109:
 - SRFI-110:
 - SRFI-111:
-- SRFI-112: DRAFT
+- SRFI-112:
 - SRFI-113: DRAFT
 - SRFI-114:
 - SRFI-115:
+- SRFI-116: DRAFT
