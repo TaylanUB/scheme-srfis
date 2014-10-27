@@ -169,30 +169,30 @@ you pay attention.
 - SRFI-20: withdrawn
 - SRFI-21:
 - SRFI-22:
-- SRFI-23:
+- SRFI-23: r7rs
 - SRFI-24: withdrawn
 - SRFI-25:
 - SRFI-26:
 - SRFI-27:
 - SRFI-28:
 - SRFI-29:
-- SRFI-30:
+- SRFI-30: r7rs
 - SRFI-31:
 - SRFI-32: withdrawn
 - SRFI-33: withdrawn
-- SRFI-34:
+- SRFI-34: r7rs
 - SRFI-35: UNTESTED
 - SRFI-36:
 - SRFI-37:
-- SRFI-38:
-- SRFI-39:
+- SRFI-38: r7rs
+- SRFI-39: r7rs
 - SRFI-40:
 - SRFI-41:
 - SRFI-42:
 - SRFI-43:
 - SRFI-44:
-- SRFI-45:
-- SRFI-46:
+- SRFI-45: r7rs
+- SRFI-46: r7rs
 - SRFI-47:
 - SRFI-48:
 - SRFI-49:
