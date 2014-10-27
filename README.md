@@ -131,6 +131,7 @@ All SRFI are listed here, and marked with one of the following:
 
 - (empty): Has yet to be looked into.
 - withdrawn: It's a withdrawn SRFI.
+- deprecated: Deprecated by another SRFI.
 - platform: Ought to be implemented at the platform level.
 - r7rs: Subsumed by R7RS in some way.
 - UNTESTED: Yet lacks a test-suite.
@@ -186,7 +187,7 @@ you pay attention.
 - SRFI-37:
 - SRFI-38: r7rs
 - SRFI-39: r7rs
-- SRFI-40:
+- SRFI-40: deprecated
 - SRFI-41:
 - SRFI-42:
 - SRFI-43:
