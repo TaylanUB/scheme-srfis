@@ -115,6 +115,16 @@ SRFI-2
   allow it, and it's a lot easier to implement too, hence our
   implementation allows it as well.
 
+SRFI-13
+-------
+
+- `string-titlecase`: The module `(srfi aux)` contains the parameters
+  `char-cased?-proc` and `char-titlecase-proc` which you can set while
+  loading this library (and only while loading it, not later) to
+  correct the behavior of this procedure.  The default `char-cased?`
+  compares the upcased and downcased versions of a character to decide
+  whether it's cased, and `char-titlecase` does a mere upcase.
+
 SRFI-64
 -------
 
@@ -160,7 +170,7 @@ you pay attention.
 - SRFI-10: platform
 - SRFI-11: r7rs
 - SRFI-12: withdrawn
-- SRFI-13:
+- SRFI-13: UNTESTED
 - SRFI-14:
 - SRFI-15: withdrawn
 - SRFI-16: r7rs

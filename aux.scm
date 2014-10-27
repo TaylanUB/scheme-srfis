@@ -2,8 +2,12 @@
   (export
    debug-mode
    define-aux-forms
+   char-cased?-proc
+   char-titlecase-proc
    )
-  (import (scheme base))
+  (import
+   (scheme base)
+   (scheme char))
   (begin
 
     (define debug-mode (make-parameter #f))
@@ -64,5 +68,12 @@
                       default)))))
 
            ))))
+
+    (define char-cased?-proc
+      (make-parameter
+       (lambda (c)
+         (not (eqv? (char-upcase c) (char-downcase c))))))
+
+    (define char-titlecase-proc (make-parameter char-upcase))
 
     ))
