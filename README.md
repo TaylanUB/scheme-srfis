@@ -179,7 +179,7 @@ you pay attention.
 - SRFI-19:
 - SRFI-20: withdrawn
 - SRFI-21:
-- SRFI-22:
+- SRFI-22: platform
 - SRFI-23: r7rs
 - SRFI-24: withdrawn
 - SRFI-25:
