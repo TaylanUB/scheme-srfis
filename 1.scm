@@ -34,8 +34,10 @@
   (import
    (scheme base)
    (scheme cxr)
-   (srfi 8))
+   (srfi 8)
+   (srfi aux))
   (begin
+    (define-check-arg check-arg)
     (define-syntax let-optionals
       (syntax-rules ()
         ((_ args () body ...)

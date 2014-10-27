@@ -32,6 +32,8 @@
 ;;; Make a list of length LEN. Elt i is (PROC i) for 0 <= i < LEN.
 
 (define (list-tabulate len proc)
+  (check-arg (lambda (n) (and (integer? n) (>= n 0))) len list-tabulate)
+  (check-arg procedure? proc list-tabulate)
   (do ((i (- len 1) (- i 1))
        (ans '() (cons (proc i) ans)))
       ((< i 0) ans)))
@@ -50,8 +52,11 @@
 ;;; IOTA count [start step]	(start start+step ... start+(count-1)*step)
 
 (define (iota count . maybe-start+step)
+  (check-arg integer? count iota)
   (if (< count 0) (error "Negative step count" iota count))
   (let-optionals maybe-start+step ((start 0) (step 1))
+    (check-arg number? start iota)
+    (check-arg number? step iota)
     (let loop ((n 0) (r '()))
       (if (= n count)
 	  (reverse r)
@@ -259,16 +264,19 @@
 ;;; take & drop
 
 (define (take lis k)
+  (check-arg integer? k take)
   (let recur ((lis lis) (k k))
     (if (zero? k) '()
 	(cons (car lis)
 	      (recur (cdr lis) (- k 1))))))
 
 (define (drop lis k)
+  (check-arg integer? k drop)
   (let iter ((lis lis) (k k))
     (if (zero? k) lis (iter (cdr lis) (- k 1)))))
 
 (define (take! lis k)
+  (check-arg integer? k take!)
   (if (zero? k) '()
       (begin (set-cdr! (drop lis (- k 1)) '())
 	     lis)))
@@ -278,12 +286,14 @@
 ;;; the end.
 
 (define (take-right lis k)
+  (check-arg integer? k take-right)
   (let lp ((lag lis)  (lead (drop lis k)))
     (if (pair? lead)
 	(lp (cdr lag) (cdr lead))
 	lag)))
 
 (define (drop-right lis k)
+  (check-arg integer? k drop-right)
   (let recur ((lag lis) (lead (drop lis k)))
     (if (pair? lead)
 	(cons (car lag) (recur (cdr lag) (cdr lead)))
@@ -292,6 +302,7 @@
 ;;; In this function, LEAD is actually K+1 ahead of LAG. This lets
 ;;; us stop LAG one step early, in time to smash its cdr to ().
 (define (drop-right! lis k)
+  (check-arg integer? k drop-right!)
   (let ((lead (drop lis k)))
     (if (pair? lead)
 
@@ -348,12 +359,14 @@
 ;      (list-tail lis k)))
 
 (define (split-at x k)
+  (check-arg integer? k split-at)
   (let recur ((lis x) (k k))
     (if (zero? k) (values '() lis)
 	(receive (prefix suffix) (recur (cdr lis) (- k 1))
 	  (values (cons (car lis) prefix) suffix)))))
 
 (define (split-at! x k)
+  (check-arg integer? k split-at!)
   (if (zero? k) (values '() x)
       (let* ((prev (drop x (- k 1)))
 	     (suffix (cdr prev)))
@@ -364,6 +377,7 @@
 (define (last lis) (car (last-pair lis)))
 
 (define (last-pair lis)
+  (check-arg pair? lis last-pair)
   (let lp ((lis lis))
     (let ((tail (cdr lis)))
       (if (pair? tail) (lp tail) lis))))
@@ -548,6 +562,7 @@
 ;;; count
 ;;;;;;;;;
 (define (count pred list1 . lists)
+  (check-arg procedure? pred count)
   (if (pair? lists)
 
       ;; N-ary case
@@ -568,6 +583,9 @@
 ;;;;;;;;;;;;;;;
 
 (define (unfold-right p f g seed . maybe-tail)
+  (check-arg procedure? p unfold-right)
+  (check-arg procedure? f unfold-right)
+  (check-arg procedure? g unfold-right)
   (let lp ((seed seed) (ans (:optional maybe-tail '())))
     (if (p seed) ans
 	(lp (g seed)
@@ -575,6 +593,9 @@
 
 
 (define (unfold p f g seed . maybe-tail-gen)
+  (check-arg procedure? p unfold)
+  (check-arg procedure? f unfold)
+  (check-arg procedure? g unfold)
   (if (pair? maybe-tail-gen)
 
       (let ((tail-gen (car maybe-tail-gen)))
@@ -591,6 +612,7 @@
       
 
 (define (fold kons knil lis1 . lists)
+  (check-arg procedure? kons fold)
   (if (pair? lists)
       (let lp ((lists (cons lis1 lists)) (ans knil))	; N-ary case
 	(receive (cars+ans cdrs) (%cars+cdrs+ lists ans)
@@ -603,6 +625,7 @@
 
 
 (define (fold-right kons knil lis1 . lists)
+  (check-arg procedure? kons fold-right)
   (if (pair? lists)
       (let recur ((lists (cons lis1 lists)))		; N-ary case
 	(let ((cdrs (%cdrs lists)))
@@ -616,6 +639,7 @@
 
 
 (define (pair-fold-right f zero lis1 . lists)
+  (check-arg procedure? f pair-fold-right)
   (if (pair? lists)
       (let recur ((lists (cons lis1 lists)))		; N-ary case
 	(let ((cdrs (%cdrs lists)))
@@ -626,6 +650,7 @@
 	(if (null-list? lis) zero (f lis (recur (cdr lis)))))))
 
 (define (pair-fold f zero lis1 . lists)
+  (check-arg procedure? f pair-fold)
   (if (pair? lists)
       (let lp ((lists (cons lis1 lists)) (ans zero))	; N-ary case
 	(let ((tails (%cdrs lists)))
@@ -642,10 +667,12 @@
 ;;; These cannot meaningfully be n-ary.
 
 (define (reduce f ridentity lis)
+  (check-arg procedure? f reduce)
   (if (null-list? lis) ridentity
       (fold f (car lis) (cdr lis))))
 
 (define (reduce-right f ridentity lis)
+  (check-arg procedure? f reduce-right)
   (if (null-list? lis) ridentity
       (let recur ((head (car lis)) (lis (cdr lis)))
 	(if (pair? lis)
@@ -663,6 +690,7 @@
   (really-append-map append-map! append! f lis1 lists))
 
 (define (really-append-map who appender f lis1 lists)
+  (check-arg procedure? f who)
   (if (pair? lists)
       (receive (cars cdrs) (%cars+cdrs (cons lis1 lists))
 	(if (null? cars) '()
@@ -681,6 +709,7 @@
 
 
 (define (pair-for-each proc lis1 . lists)
+  (check-arg procedure? proc pair-for-each)
   (if (pair? lists)
 
       (let lp ((lists (cons lis1 lists)))
@@ -698,6 +727,7 @@
 
 ;;; We stop when LIS1 runs out, not when any list runs out.
 (define (map! f lis1 . lists)
+  (check-arg procedure? f map!)
   (if (pair? lists)
       (let lp ((lis1 lis1) (lists lists))
 	(if (not (null-list? lis1))
@@ -712,6 +742,7 @@
 
 ;;; Map F across L, and save up all the non-false results.
 (define (filter-map f lis1 . lists)
+  (check-arg procedure? f filter-map)
   (if (pair? lists)
       (let recur ((lists (cons lis1 lists)))
 	(receive (cars cdrs) (%cars+cdrs lists)
@@ -733,6 +764,7 @@
 ;;; in which case this procedure may simply be defined as a synonym for MAP.
 
 (define (map-in-order f lis1 . lists)
+  (check-arg procedure? f map-in-order)
   (if (pair? lists)
       (let recur ((lists (cons lis1 lists)))
 	(receive (cars cdrs) (%cars+cdrs lists)
@@ -762,6 +794,7 @@
 ;; If Scheme had multi-continuation calls, they could be made more efficient.
 
 (define (filter pred lis)			; Sleazing with EQ? makes this
+  (check-arg procedure? pred filter)		; one faster.
   (let recur ((lis lis))		
     (if (null-list? lis) lis			; Use NOT-PAIR? to handle dotted lists.
 	(let ((head (car lis))
@@ -814,6 +847,7 @@
 ;;; beginning of the next.
 
 (define (filter! pred lis)
+  (check-arg procedure? pred filter!)
   (let lp ((ans lis))
     (cond ((null-list? ans)       ans)			; Scan looking for
 	  ((not (pred (car ans))) (lp (cdr ans)))	; first cons of result.
@@ -849,6 +883,7 @@
 ;;; the technique is slightly subtle.
 
 (define (partition pred lis)
+  (check-arg procedure? pred partition)
   (let recur ((lis lis))
     (if (null-list? lis) (values lis lis)	; Use NOT-PAIR? to handle dotted lists.
 	(let ((elt (car lis))
@@ -882,6 +917,7 @@
 ;;; lists.
 
 (define (partition! pred lis)
+  (check-arg procedure? pred partition!)
   (if (null-list? lis) (values lis lis)
 
       ;; This pair of loops zips down contiguous in & out runs of the
@@ -978,6 +1014,7 @@
 
 (define (delete-duplicates lis . maybe-=)
   (let ((elt= (:optional maybe-= equal?)))
+    (check-arg procedure? elt= delete-duplicates)
     (let recur ((lis lis))
       (if (null-list? lis) lis
 	  (let* ((x (car lis))
@@ -987,6 +1024,7 @@
 
 (define (delete-duplicates! lis maybe-=)
   (let ((elt= (:optional maybe-= equal?)))
+    (check-arg procedure? elt= delete-duplicates!)
     (let recur ((lis lis))
       (if (null-list? lis) lis
 	  (let* ((x (car lis))
@@ -1026,12 +1064,14 @@
 	(else #f)))
 
 (define (find-tail pred list)
+  (check-arg procedure? pred find-tail)
   (let lp ((list list))
     (and (not (null-list? list))
 	 (if (pred (car list)) list
 	     (lp (cdr list))))))
 
 (define (take-while pred lis)
+  (check-arg procedure? pred take-while)
   (let recur ((lis lis))
     (if (null-list? lis) '()
 	(let ((x (car lis)))
@@ -1040,6 +1080,7 @@
 	      '())))))
 
 (define (drop-while pred lis)
+  (check-arg procedure? pred drop-while)
   (let lp ((lis lis))
     (if (null-list? lis) '()
 	(if (pred (car lis))
@@ -1047,6 +1088,7 @@
 	    lis))))
 
 (define (take-while! pred lis)
+  (check-arg procedure? pred take-while!)
   (if (or (null-list? lis) (not (pred (car lis)))) '()
       (begin (let lp ((prev lis) (rest (cdr lis)))
 	       (if (pair? rest)
@@ -1056,6 +1098,7 @@
 	     lis)))
 
 (define (span pred lis)
+  (check-arg procedure? pred span)
   (let recur ((lis lis))
     (if (null-list? lis) (values '() '())
 	(let ((x (car lis)))
@@ -1065,6 +1108,7 @@
 	      (values '() lis))))))
 
 (define (span! pred lis)
+  (check-arg procedure? pred span!)
   (if (or (null-list? lis) (not (pred (car lis)))) (values '() lis)
       (let ((suffix (let lp ((prev lis) (rest (cdr lis)))
 		      (if (null-list? rest) rest
@@ -1079,6 +1123,7 @@
 (define (break! pred lis) (span! (lambda (x) (not (pred x))) lis))
 
 (define (any pred lis1 . lists)
+  (check-arg procedure? pred any)
   (if (pair? lists)
 
       ;; N-ary case
@@ -1105,6 +1150,7 @@
 ;             (lp (cdr list))))))
 
 (define (every pred lis1 . lists)
+  (check-arg procedure? pred every)
   (if (pair? lists)
 
       ;; N-ary case
@@ -1124,6 +1170,7 @@
 		(and (pred head) (lp (car tail) (cdr tail))))))))
 
 (define (list-index pred lis1 . lists)
+  (check-arg procedure? pred list-index)
   (if (pair? lists)
 
       ;; N-ary case
@@ -1170,6 +1217,7 @@
 (define (%lset2<= = lis1 lis2) (every (lambda (x) (member x lis2 =)) lis1))
 
 (define (lset<= = . lists)
+  (check-arg procedure? = lset<=)
   (or (not (pair? lists)) ; 0-ary case
       (let lp ((s1 (car lists)) (rest (cdr lists)))
 	(or (not (pair? rest))
@@ -1179,6 +1227,7 @@
 		   (lp s2 rest)))))))
 
 (define (lset= = . lists)
+  (check-arg procedure? = lset=)
   (or (not (pair? lists)) ; 0-ary case
       (let lp ((s1 (car lists)) (rest (cdr lists)))
 	(or (not (pair? rest))
@@ -1190,11 +1239,13 @@
 
 
 (define (lset-adjoin = lis . elts)
+  (check-arg procedure? = lset-adjoin)
   (fold (lambda (elt ans) (if (member elt ans =) ans (cons elt ans)))
 	lis elts))
 
 
 (define (lset-union = . lists)
+  (check-arg procedure? = lset-union)
   (reduce (lambda (lis ans)		; Compute ANS + LIS.
 	    (cond ((null? lis) ans)	; Don't copy any lists
 		  ((null? ans) lis) 	; if we don't have to.
@@ -1207,6 +1258,7 @@
 	  '() lists))
 
 (define (lset-union! = . lists)
+  (check-arg procedure? = lset-union!)
   (reduce (lambda (lis ans)		; Splice new elts of LIS onto the front of ANS.
 	    (cond ((null? lis) ans)	; Don't copy any lists
 		  ((null? ans) lis) 	; if we don't have to.
@@ -1222,6 +1274,7 @@
 
 
 (define (lset-intersection = lis1 . lists)
+  (check-arg procedure? = lset-intersection)
   (let ((lists (delete lis1 lists eq?))) ; Throw out any LIS1 vals.
     (cond ((any null-list? lists) '())		; Short cut
 	  ((null? lists)          lis1)		; Short cut
@@ -1230,6 +1283,7 @@
 			lis1)))))
 
 (define (lset-intersection! = lis1 . lists)
+  (check-arg procedure? = lset-intersection!)
   (let ((lists (delete lis1 lists eq?))) ; Throw out any LIS1 vals.
     (cond ((any null-list? lists) '())		; Short cut
 	  ((null? lists)          lis1)		; Short cut
@@ -1239,6 +1293,7 @@
 
 
 (define (lset-difference = lis1 . lists)
+  (check-arg procedure? = lset-difference)
   (let ((lists (filter pair? lists)))	; Throw out empty lists.
     (cond ((null? lists)     lis1)	; Short cut
 	  ((memq lis1 lists) '())	; Short cut
@@ -1248,6 +1303,7 @@
 			lis1)))))
 
 (define (lset-difference! = lis1 . lists)
+  (check-arg procedure? = lset-difference!)
   (let ((lists (filter pair? lists)))	; Throw out empty lists.
     (cond ((null? lists)     lis1)	; Short cut
 	  ((memq lis1 lists) '())	; Short cut
@@ -1258,6 +1314,7 @@
 
 
 (define (lset-xor = . lists)
+  (check-arg procedure? = lset-xor)
   (reduce (lambda (b a)			; Compute A xor B:
 	    ;; Note that this code relies on the constant-time
 	    ;; short-cuts provided by LSET-DIFF+INTERSECTION,
@@ -1279,6 +1336,7 @@
 
 
 (define (lset-xor! = . lists)
+  (check-arg procedure? = lset-xor!)
   (reduce (lambda (b a)			; Compute A xor B:
 	    ;; Note that this code relies on the constant-time
 	    ;; short-cuts provided by LSET-DIFF+INTERSECTION,
@@ -1301,6 +1359,7 @@
 
 
 (define (lset-diff+intersection = lis1 . lists)
+  (check-arg procedure? = lset-diff+intersection)
   (cond ((every null-list? lists) (values lis1 '()))	; Short cut
 	((memq lis1 lists)        (values '() lis1))	; Short cut
 	(else (partition (lambda (elt)
@@ -1309,6 +1368,7 @@
 			 lis1))))
 
 (define (lset-diff+intersection! = lis1 . lists)
+  (check-arg procedure? = lset-diff+intersection!)
   (cond ((every null-list? lists) (values lis1 '()))	; Short cut
 	((memq lis1 lists)        (values '() lis1))	; Short cut
 	(else (partition! (lambda (elt)

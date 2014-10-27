@@ -96,6 +96,13 @@ Using reference implementations
 SRFI-specific notes
 ===================
 
+For some SRFIs, setting the `debug-mode` parameter from the library
+`(srfi aux)` to true while loading the library will enable improved
+diagnostics, usually at the expense of performance.  Note that a
+library might be loaded only a single time for the whole run-time of a
+system, so a restart might be necessary to reload a library with a
+different `debug-mode` setting.
+
 SRFI-2
 ------
 
