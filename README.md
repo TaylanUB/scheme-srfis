@@ -237,7 +237,7 @@ you pay attention.
 - SRFI-33: withdrawn
 - SRFI-34: r7rs
 - SRFI-35: UNTESTED
-- SRFI-36:
+- SRFI-36: platform
 - SRFI-37:
 - SRFI-38: r7rs
 - SRFI-39: r7rs
