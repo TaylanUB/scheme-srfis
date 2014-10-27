@@ -174,7 +174,7 @@ you pay attention.
 - SRFI-14:
 - SRFI-15: withdrawn
 - SRFI-16: r7rs
-- SRFI-17:
+- SRFI-17: UNTESTED
 - SRFI-18:
 - SRFI-19:
 - SRFI-20: withdrawn
