@@ -37,22 +37,5 @@
    (srfi 8)
    (srfi aux))
   (begin
-    (define-check-arg check-arg)
-    (define-syntax let-optionals
-      (syntax-rules ()
-        ((_ args () body ...)
-         (begin body ...))
-        ((_ args ((var default) . rest) body ...)
-         (let* ((a args)
-                (var (if (null? a)
-                         default
-                         (car a))))
-           (let-optionals (if (null? a) a (cdr a)) rest body ...)))))
-    (define-syntax :optional
-      (syntax-rules ()
-        ((_ args default)
-         (let ((args args))
-           (if (pair? args)
-               (car args)
-               default))))))
+    (define-aux-forms check-arg let-optionals* :optional))
   (include "1.body.scm"))

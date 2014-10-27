@@ -54,7 +54,7 @@
 (define (iota count . maybe-start+step)
   (check-arg integer? count iota)
   (if (< count 0) (error "Negative step count" iota count))
-  (let-optionals maybe-start+step ((start 0) (step 1))
+  (let-optionals* maybe-start+step ((start 0) (step 1))
     (check-arg number? start iota)
     (check-arg number? step iota)
     (let loop ((n 0) (r '()))
