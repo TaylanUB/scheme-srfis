@@ -185,7 +185,7 @@ you pay attention.
 - SRFI-25:
 - SRFI-26: check
 - SRFI-27:
-- SRFI-28:
+- SRFI-28: UNTESTED
 - SRFI-29:
 - SRFI-30: r7rs
 - SRFI-31:
