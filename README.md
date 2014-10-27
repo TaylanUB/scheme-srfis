@@ -183,7 +183,7 @@ you pay attention.
 - SRFI-23: r7rs
 - SRFI-24: withdrawn
 - SRFI-25:
-- SRFI-26:
+- SRFI-26: check
 - SRFI-27:
 - SRFI-28:
 - SRFI-29:
