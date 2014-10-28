@@ -33,6 +33,7 @@
    )
   (import
    (scheme base)
+   (scheme case-lambda)
    (scheme cxr)
    (srfi 8)
    (srfi aux))
