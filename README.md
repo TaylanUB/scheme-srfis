@@ -303,7 +303,7 @@ you pay attention.
 - SRFI-92: withdrawn
 - SRFI-93: withdrawn
 - SRFI-94:
-- SRFI-95:
+- SRFI-95: UNTESTED
 - SRFI-96:
 - SRFI-97:
 - SRFI-98:
