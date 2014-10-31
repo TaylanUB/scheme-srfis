@@ -243,7 +243,7 @@ you pay attention.
 - SRFI-39: r7rs
 - SRFI-40: deprecated
 - SRFI-41:
-- SRFI-42:
+- SRFI-42: UNTESTED
 - SRFI-43:
 - SRFI-44:
 - SRFI-45: r7rs
