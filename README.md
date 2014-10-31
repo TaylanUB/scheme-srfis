@@ -31,9 +31,9 @@ show.  Therefore:
   functionality via library code when it's clearly intended to be
   implemented at the platform level.
 
-- The preferred license is the LGPL version 3.  Refrain from GPL and
-  the like; we'd like it if Scheme platforms shipped straight with
-  these implementations or platform-tuned versions of them, and
+- The preferred license is the latest version of the LGPL.  Refrain
+  from normal GPL; we'd like it if Scheme platforms shipped straight
+  with these implementations or platform-tuned versions of them, and
   forcing whole Scheme programs to be GPL'ed just for using these SRFI
   implementations would also be overboard.
 
