@@ -169,6 +169,13 @@ SRFI-13
   compares the upcased and downcased versions of a character to decide
   whether it's cased, and `char-titlecase` does a mere upcase.
 
+SRFI-63
+-------
+
+All identifiers have been lowercased.  If you have source code using
+identifiers with uppercase letters, you might want to use the
+`#!fold-case` directive.
+
 SRFI-64
 -------
 
@@ -264,7 +271,7 @@ you pay attention.
 - SRFI-60: UNTESTED
 - SRFI-61:
 - SRFI-62:
-- SRFI-63:
+- SRFI-63: UNTESTED
 - SRFI-64: UNTESTED
 - SRFI-65: withdrawn
 - SRFI-66:
