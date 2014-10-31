@@ -268,7 +268,7 @@ you pay attention.
 - SRFI-55:
 - SRFI-56: withdrawn
 - SRFI-57:
-- SRFI-58:
+- SRFI-58: platform
 - SRFI-59:
 - SRFI-60: UNTESTED
 - SRFI-61: UNTESTED
