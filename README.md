@@ -272,7 +272,7 @@ you pay attention.
 - SRFI-59:
 - SRFI-60: UNTESTED
 - SRFI-61: UNTESTED
-- SRFI-62:
+- SRFI-62: r7rs
 - SRFI-63: UNTESTED
 - SRFI-64: UNTESTED
 - SRFI-65: withdrawn
