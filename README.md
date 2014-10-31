@@ -31,6 +31,10 @@ show.  Therefore:
   functionality via library code when it's clearly intended to be
   implemented at the platform level.
 
+- Withdrawn SRFIs are no priority since we assume they've been
+  withdrawn for good reasons, but if there's any which you find useful
+  then feel free to make a request or (better) contribute it.
+
 - The preferred license is the latest version of the LGPL.  Refrain
   from normal GPL; we'd like it if Scheme platforms shipped straight
   with these implementations or platform-tuned versions of them, and
@@ -82,8 +86,6 @@ Source:
 
 Concrete conventions
 --------------------
-
-- No withdrawn SRFIs.
 
 - All implementations should be valid R7RS-small libraries for now.
   We will move to an R7RS-large core/base when possible.
