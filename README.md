@@ -321,7 +321,7 @@ you pay attention.
 - SRFI-75: withdrawn
 - SRFI-76: withdrawn
 - SRFI-77: withdrawn
-- SRFI-78:
+- SRFI-78: UNTESTED
 - SRFI-79: withdrawn
 - SRFI-80: withdrawn
 - SRFI-81: withdrawn
