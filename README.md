@@ -354,7 +354,7 @@ you pay attention.
 - SRFI-108: platform
 - SRFI-109: platform
 - SRFI-110: platform
-- SRFI-111:
+- SRFI-111: UNTESTED
 - SRFI-112:
 - SRFI-113: DRAFT
 - SRFI-114:
