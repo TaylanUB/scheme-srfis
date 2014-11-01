@@ -326,7 +326,7 @@ you pay attention.
 - SRFI-84: withdrawn
 - SRFI-85: withdrawn
 - SRFI-86:
-- SRFI-87:
+- SRFI-87: UNTESTED
 - SRFI-88: platform
 - SRFI-89:
 - SRFI-90:
