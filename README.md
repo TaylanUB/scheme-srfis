@@ -205,6 +205,15 @@ SRFI-67
   natural additions to this SRFI since R7RS has bytevectors as an
   additional sequence type.
 
+SRFI-70
+-------
+
+This is an odd one.  It's not an SRFI in the strict sense, because it
+requests a change to the standard and not to implementations.  In any
+case I marked it as subsumed by R7RS below because it seems that R7RS
+improved on the section which this SRFI requests improvements in,
+although not exactly in the way this SRFI asks for.
+
 Progress
 ========
 
@@ -277,13 +286,13 @@ you pay attention.
 - SRFI-46: r7rs
 - SRFI-47: deprecated (SRFI-63)
 - SRFI-48:
-- SRFI-49:
+- SRFI-49: platform
 - SRFI-50: withdrawn
 - SRFI-51:
 - SRFI-52: withdrawn
 - SRFI-53: withdrawn
 - SRFI-54:
-- SRFI-55:
+- SRFI-55: r7rs (import)
 - SRFI-56: withdrawn
 - SRFI-57:
 - SRFI-58: platform
@@ -298,7 +307,7 @@ you pay attention.
 - SRFI-67: UNTESTED
 - SRFI-68: withdrawn
 - SRFI-69:
-- SRFI-70:
+- SRFI-70: r7rs (see remarks above)
 - SRFI-71:
 - SRFI-72:
 - SRFI-73: withdrawn
