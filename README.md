@@ -341,19 +341,19 @@ you pay attention.
 - SRFI-95: UNTESTED
 - SRFI-96:
 - SRFI-97:
-- SRFI-98:
+- SRFI-98: r7rs
 - SRFI-99:
 - SRFI-100:
 - SRFI-101:
 - SRFI-102: withdrawn
 - SRFI-103: withdrawn
 - SRFI-104: withdrawn
-- SRFI-105:
-- SRFI-106:
-- SRFI-107:
-- SRFI-108:
-- SRFI-109:
-- SRFI-110:
+- SRFI-105: platform
+- SRFI-106: DRAFT
+- SRFI-107: platform
+- SRFI-108: platform
+- SRFI-109: platform
+- SRFI-110: platform
 - SRFI-111:
 - SRFI-112:
 - SRFI-113: DRAFT
