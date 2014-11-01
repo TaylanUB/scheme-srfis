@@ -271,7 +271,7 @@ you pay attention.
 - SRFI-40: deprecated (SRFI-41)
 - SRFI-41:
 - SRFI-42: UNTESTED
-- SRFI-43:
+- SRFI-43: UNTESTED
 - SRFI-44:
 - SRFI-45: r7rs
 - SRFI-46: r7rs

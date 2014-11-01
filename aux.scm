@@ -21,9 +21,14 @@
            (define check-arg
              (if (debug-mode)
                  (lambda (pred val proc)
-                   (if (pred val) val (error "Bad arg" val pred proc)))
+                   (if (pred val)
+                       val
+                       (error "Type assertion failed:"
+                              `(value ,val)
+                              `(expected-type ,pred)
+                              `(callee ,proc))))
                  (lambda (pred val proc)
-                   #f)))
+                   val)))
 
            (define check-optional
              (if (debug-mode)
