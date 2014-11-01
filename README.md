@@ -139,6 +139,7 @@ Using reference implementations
   page will have a copyright).  The same boilerplate goes into
   `n.body.scm` of course.
 
+
 SRFI-specific notes
 ===================
 
@@ -213,6 +214,7 @@ requests a change to the standard and not to implementations.  In any
 case I marked it as subsumed by R7RS below because it seems that R7RS
 improved on the section which this SRFI requests improvements in,
 although not exactly in the way this SRFI asks for.
+
 
 Progress
 ========
