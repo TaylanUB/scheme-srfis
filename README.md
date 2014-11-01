@@ -233,6 +233,10 @@ All SRFI are listed here, and marked with one of the following:
 UNTESTED and DRAFT are capitalized to emphasize that we're not done
 with them yet; all other non-empty tags mean we're done with it.
 
+Don't let the UNTESTED tag scare you off; I minimally test any
+implementation in Chibi, and some are really trivial, but so long as
+an SRFI has no corresponding `n.test.scm`, it's UNTESTED, period.
+
 The r7rs tag can be vague.  In the simplest case the SRFI is adopted
 as-is in R7RS.  Sometimes there are minor tweaks.  Sometimes the same
 essential functionality is provided in a different way in R7RS; a good
