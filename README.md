@@ -187,6 +187,24 @@ SRFI-64
   an error in R7RS.  Leaving the argument out will try to use a sane
   platform-specific default but falls back to `#f`.
 
+SRFI-66
+-------
+
+The "u8vector" API in this SRFI is almost equivalent to the bytevector
+API in R7RS.  The only incompatibilities are that `u8vector-copy!`
+takes a different order of arguments, and that there is no equivalent
+of `u8vector-compare` in R7RS.  I see neither of these reason enough
+to implement this SRFI, considering it to be subsumed by R7RS instead.
+
+That being said, I augmented SRFI-67 with `bytevector-compare`.
+
+SRFI-67
+-------
+
+- `bytevector-compare`, `bytevector-compare-as-list`: These are
+  natural additions to this SRFI since R7RS has bytevectors as an
+  additional sequence type.
+
 Progress
 ========
 
@@ -276,8 +294,8 @@ you pay attention.
 - SRFI-63: UNTESTED
 - SRFI-64: UNTESTED
 - SRFI-65: withdrawn
-- SRFI-66:
-- SRFI-67:
+- SRFI-66: r7rs (bytevectors)
+- SRFI-67: UNTESTED
 - SRFI-68: withdrawn
 - SRFI-69:
 - SRFI-70:
