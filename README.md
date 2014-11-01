@@ -298,7 +298,7 @@ you pay attention.
 - SRFI-85: withdrawn
 - SRFI-86:
 - SRFI-87:
-- SRFI-88:
+- SRFI-88: platform
 - SRFI-89:
 - SRFI-90:
 - SRFI-91: withdrawn
