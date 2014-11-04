@@ -20,9 +20,9 @@ show.  Therefore:
   they're not in this repository, if the alternative is using horrid
   hacks.
 
-- Write test suites in SRFI-64: <http://srfi.schemers.org/srfi-64/>.
-  It's also fine to use any ad-hoc test suites found within reference
-  implementations though, like in SRFI-2.
+- Write test suites in SRFI-64 or SRFI-78.  It's also fine to use any
+  ad-hoc test suites found within reference implementations though,
+  like in SRFI-2.
 
 - For those SRFIs which cannot be implemented in pure R7RS, it's fine
   to write libraries that just wrap features of specific platforms via
