@@ -291,7 +291,7 @@ you pay attention.
 - SRFI-45: r7rs
 - SRFI-46: r7rs
 - SRFI-47: deprecated (SRFI-63)
-- SRFI-48:
+- SRFI-48: UNTESTED
 - SRFI-49: platform
 - SRFI-50: withdrawn
 - SRFI-51:
