@@ -312,7 +312,7 @@ you pay attention.
 - SRFI-66: r7rs (bytevectors)
 - SRFI-67: UNTESTED
 - SRFI-68: withdrawn
-- SRFI-69:
+- SRFI-69: UNTESTED
 - SRFI-70: r7rs (see remarks above)
 - SRFI-71:
 - SRFI-72:
