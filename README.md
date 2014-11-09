@@ -278,7 +278,7 @@ you pay attention.
 - SRFI-24: withdrawn
 - SRFI-25: UNTESTED
 - SRFI-26: check
-- SRFI-27:
+- SRFI-27: UNTESTED
 - SRFI-28: UNTESTED
 - SRFI-29:
 - SRFI-30: r7rs
