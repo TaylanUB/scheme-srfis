@@ -172,6 +172,14 @@ SRFI-13
   compares the upcased and downcased versions of a character to decide
   whether it's cased, and `char-titlecase` does a mere upcase.
 
+SRFI-41
+-------
+
+The SRFI proposes an R6RS library `(streams)` with sub-libraries
+`(streams primitive)` and `(streams derived)`.  We provide these as
+`(srfi 41)`, `(srfi 41 primitive)`, and `(srfi 41 derived)`,
+respectively.
+
 SRFI-63
 -------
 
@@ -284,7 +292,7 @@ you pay attention.
 - SRFI-38: r7rs
 - SRFI-39: r7rs
 - SRFI-40: deprecated (SRFI-41)
-- SRFI-41:
+- SRFI-41: UNTESTED
 - SRFI-42: UNTESTED
 - SRFI-43: UNTESTED
 - SRFI-44:
