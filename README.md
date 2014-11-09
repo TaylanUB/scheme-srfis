@@ -280,7 +280,7 @@ you pay attention.
 - SRFI-34: r7rs
 - SRFI-35: UNTESTED
 - SRFI-36: platform
-- SRFI-37:
+- SRFI-37: UNTESTED
 - SRFI-38: r7rs
 - SRFI-39: r7rs
 - SRFI-40: deprecated (SRFI-41)
