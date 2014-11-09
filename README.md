@@ -302,7 +302,7 @@ you pay attention.
 - SRFI-48: UNTESTED
 - SRFI-49: platform
 - SRFI-50: withdrawn
-- SRFI-51:
+- SRFI-51: UNTESTED
 - SRFI-52: withdrawn
 - SRFI-53: withdrawn
 - SRFI-54:
