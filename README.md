@@ -323,7 +323,7 @@ you pay attention.
 - SRFI-69: UNTESTED
 - SRFI-70: r7rs (see remarks above)
 - SRFI-71:
-- SRFI-72:
+- SRFI-72: platform
 - SRFI-73: withdrawn
 - SRFI-74:
 - SRFI-75: withdrawn
