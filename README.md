@@ -308,7 +308,7 @@ you pay attention.
 - SRFI-54:
 - SRFI-55: r7rs (import)
 - SRFI-56: withdrawn
-- SRFI-57:
+- SRFI-57: UNTESTED
 - SRFI-58: platform
 - SRFI-59:
 - SRFI-60: UNTESTED
