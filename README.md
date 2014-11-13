@@ -145,10 +145,15 @@ SRFI-specific notes
 
 For some SRFIs, setting the `debug-mode` parameter from the library
 `(srfi aux)` to true while loading the library will enable improved
-diagnostics, usually at the expense of performance.  Note that a
-library might be loaded only a single time for the whole run-time of a
-system, so a restart might be necessary to reload a library with a
-different `debug-mode` setting.
+diagnostics, usually at the expense of performance.  Note that there
+is no portable and declarative way to do this; it relies on the
+platform supporting an imperative and sequential method for loading
+modules and executing code in-between.  It is most likely to work in a
+REPL, if at all.  A library might also be loaded only a single time
+for the whole run-time of a platform, so a restart might be necessary
+to load a library with a different `debug-mode` setting.  A number of
+SRFIs also support other settings through the `(srfi aux)` library;
+the same limitations apply to those.
 
 SRFI-2
 ------
@@ -222,6 +227,27 @@ requests a change to the standard and not to implementations.  In any
 case I marked it as subsumed by R7RS below because it seems that R7RS
 improved on the section which this SRFI requests improvements in,
 although not exactly in the way this SRFI asks for.
+
+SRFI-74
+-------
+
+Since the "blob" type in this SRFI is obsoleted by bytevectors, we
+don't define it; we define bytevector equivalents of the procedures in
+this SRFI which don't already have a bytevector equivalent.  Old uses
+of this SRFI should be simple to convert; a global replace of "blob"
+to "bytevector" in a body of code will get most of the job done.
+
+- `endianness`: Given a library system that makes imported bindings
+  immutable, macros such as this one (which simulate enums) are both
+  redundant, and harmful, because they either have to match their
+  input unhygienically, or will be prone to accidental shadowing of
+  the simple identifiers they expect as input.  Therefore, this macro
+  is *not* provided, and instead the three bindings `endianness-big`,
+  `endianness-little`, and `endianness-native` exported.
+
+- `endianness-native`: So far this is just set to big; you may set the
+  `native-endianness` parameter from the `(srfi aux)` module to
+  `endianness-little` before loading this library.
 
 
 Progress
@@ -325,7 +351,7 @@ you pay attention.
 - SRFI-71: UNTESTED
 - SRFI-72: platform
 - SRFI-73: withdrawn
-- SRFI-74:
+- SRFI-74: UNTESTED
 - SRFI-75: withdrawn
 - SRFI-76: withdrawn
 - SRFI-77: withdrawn

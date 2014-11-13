@@ -4,6 +4,9 @@
    define-aux-forms
    char-cased?-proc
    char-titlecase-proc
+   endianness-little
+   endianness-big
+   native-endianness
    )
   (import
    (scheme base)
@@ -80,5 +83,9 @@
          (not (eqv? (char-upcase c) (char-downcase c))))))
 
     (define char-titlecase-proc (make-parameter char-upcase))
+
+    (define endianness-little (list 'little-endian))
+    (define endianness-big (list 'big-endian))
+    (define native-endianness (make-parameter endianness-big))
 
     ))
