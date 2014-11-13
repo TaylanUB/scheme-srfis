@@ -35,11 +35,10 @@ show.  Therefore:
   withdrawn for good reasons, but if there's any which you find useful
   then feel free to make a request or (better) contribute it.
 
-- The preferred license is the latest version of the LGPL.  Refrain
-  from normal GPL; we'd like it if Scheme platforms shipped straight
-  with these implementations or platform-tuned versions of them, and
-  forcing whole Scheme programs to be GPL'ed just for using these SRFI
-  implementations would also be overboard.
+- Don't use the pure GPL for your libraries; people will be likely to
+  just reimplement them with a different license if they don't like
+  the GPL.  I like copyleft, so would use the LGPL, but do as you
+  wish.
 
 Platform expectations
 ---------------------
