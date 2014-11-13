@@ -55,9 +55,9 @@ most likely be accepted; otherwise it might get rejected on the
 grounds that the mentioned Scheme platform is not suitable.
 
 The author of this repository uses Chibi to test the libraries.
-Prepending the path to the *parent* directory of this repository to
-the load-path of Chibi (via the -I flag) will make the implementations
-here override any native SRFI implementations of Chibi.
+Prepending the path to this repository to the load-path of Chibi (via
+the -I flag) will make the implementations here override any native
+SRFI implementations of Chibi.
 
 Other than Chibi, the following platforms are explicitly intended to
 be supported once they implement R7RS:
@@ -88,8 +88,9 @@ Concrete conventions
 - All implementations should be valid R7RS-small libraries for now.
   We will move to an R7RS-large core/base when possible.
 
-- Libraries go into a file named `n.sld` where `n` is the SRFI number.
-  The library is correspondingly named `(srfi n)`.
+- Libraries go into a file named `n.sld` under the `srfi` directory,
+  where `n` is the SRFI number.  The library is correspondingly named
+  `(srfi n)`.
 
 - The order of things in a library declaration is:
 
