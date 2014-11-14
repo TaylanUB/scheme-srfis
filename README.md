@@ -82,6 +82,24 @@ The following do not intend to support R7RS, for various reasons:
 Source:
 <http://lists.scheme-reports.org/pipermail/scheme-reports/2011-October/001595.html>
 
+Snow
+----
+
+The SRFI libraries are offered through Snow packages as well:
+
+<http://taylanub-r7rs-srfis.s3-website-us-east-1.amazonaws.com/>
+
+(Thanks to Seth Alves for the hosting and help in making Snow packages
+for the libraries.)
+
+To install an SRFI, you can install
+[snow2](https://github.com/sethalves/snow2-client) and run:
+
+    snow2 -r http://taylanub-r7rs-srfis.s3-website-us-east-1.amazonaws.com/index.scm install '(srfi 1)'
+
+The repository is turned into a Snow repository by running `snow2
+package` in the top-level directory.
+
 Concrete conventions
 --------------------
 
