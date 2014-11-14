@@ -1,0 +1,5 @@
+(package
+ (name ())
+ (url "srfi-1-lists.tgz")
+ (library
+  (path "srfi/1.sld")))
