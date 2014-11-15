@@ -1,0 +1,20 @@
+(package
+ (name (srfi 5))
+ (url "srfi-5-let-with-signatures.tgz")
+ (library
+  (path "srfi/5.sld")
+  (version "1.0")
+  (homepage "http://srfi.schemers.org/srfi-5/srfi-5.html")
+  (maintainers "Taylan Ulrich Bayırlı/Kammer <taylanbayirli@gmail.com>"
+               "Seth Alves <alves@hungry.com>")
+  (authors "Andy Gaynor")
+  (description "A compatible let form with signatures and rest arguments")
+  (license bsd-style))
+ (library
+  (path "srfi-tests/5/tests.sld")
+  (use-for test)
+  (version "1.0")
+  (homepage "https://gitorious.org/taylan-scheme/srfi/")
+  (maintainers "Taylan Ulrich Bayırlı/Kammer <taylanbayirli@gmail.com>"
+               "Seth Alves <alves@hungry.com>")
+  (description "tests for tests for srfi-5")))
