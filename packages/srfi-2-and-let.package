@@ -1,5 +1,12 @@
 (package
- (name ())
+ (name (srfi 2))
  (url "srfi-2-and-let.tgz")
  (library
-  (path "srfi/2.sld")))
+  (path "srfi/2.sld")
+  (version "1.0")
+  (homepage "http://srfi.schemers.org/srfi-2/")
+  (maintainers "Taylan Ulrich Bayırlı/Kammer <taylanbayirli@gmail.com>"
+               "Seth Alves <alves@hungry.com>")
+  (authors "Taylan Ulrich Bayırlı/Kammer <taylanbayirli@gmail.com>")
+  (description "AND-LET*: an AND with local bindings, a guarded LET* special form")
+  (license lgpl3+)))
