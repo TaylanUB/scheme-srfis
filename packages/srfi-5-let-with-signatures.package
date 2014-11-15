@@ -17,4 +17,4 @@
   (homepage "https://gitorious.org/taylan-scheme/srfi/")
   (maintainers "Taylan Ulrich Bayırlı/Kammer <taylanbayirli@gmail.com>"
                "Seth Alves <alves@hungry.com>")
-  (description "tests for tests for srfi-5")))
+  (description "placeholder for tests for srfi-5")))
