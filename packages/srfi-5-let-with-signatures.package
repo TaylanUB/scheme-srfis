@@ -1,0 +1,12 @@
+(package
+ (name (srfi 5))
+ (url "srfi-5-let-with-signatures.tgz")
+ (library
+  (path "srfi/5.sld")
+  (version "1.0")
+  (homepage "http://srfi.schemers.org/srfi-5/")
+  (maintainers "Taylan Ulrich Bayırlı/Kammer <taylanbayirli@gmail.com>"
+               "Seth Alves <alves@hungry.com>")
+  (authors "Taylan Ulrich Bayırlı/Kammer <taylanbayirli@gmail.com>")
+  (description "A compatible let form with signatures and rest arguments.")
+  (license lgpl3+)))
