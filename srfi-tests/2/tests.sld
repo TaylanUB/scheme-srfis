@@ -7,8 +7,13 @@
   (import
    (scheme base)
    (scheme write)
-   (scheme eval)
-   (rename (srfi 2) (and-let* land*)))
-  ;; (include "2-alt.tests.scm")
-  (include "2.tests.scm")
+   (scheme eval))
+
+  (cond-expand
+   (gauche)
+   (else
+    (import (rename (srfi 2) (and-let* land*)))))
+
+  (include "2-alt.tests.scm")
+  ;; (include "2.tests.scm")
   )
