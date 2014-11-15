@@ -1,5 +1,22 @@
 (package
- (name ())
+ (name (srfi 2))
  (url "srfi-2-and-let.tgz")
  (library
-  (path "srfi/2.sld")))
+  (path "srfi/2.sld")
+  (version "1.0")
+  (homepage "http://srfi.schemers.org/srfi-2/srfi-2.html")
+  (maintainers "Taylan Ulrich Bayırlı/Kammer <taylanbayirli@gmail.com>"
+               "Seth Alves <alves@hungry.com>")
+  (authors "Taylan Ulrich Bayırlı/Kammer <taylanbayirli@gmail.com>"
+           "Oleg Kiselyov")
+  (description "AND-LET*: an AND with local bindings, a guarded LET* special form")
+  (license lgpl))
+ (library
+  (path "srfi-tests/2/tests.sld")
+  (use-for test)
+  (version "1.0")
+  (homepage "https://gitorious.org/taylan-scheme/srfi/")
+  (maintainers "Taylan Ulrich Bayırlı/Kammer <taylanbayirli@gmail.com>"
+               "Seth Alves <alves@hungry.com>")
+  (description "tests for srfi-2")
+  ))

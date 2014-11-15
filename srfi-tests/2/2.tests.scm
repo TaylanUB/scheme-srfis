@@ -1,7 +1,3 @@
-;; Copyright (C) Oleg Kiselyov (1998). All Rights Reserved.
-
-;; Made an R7RS program by Taylan Ulrich Bayırlı/Kammer, Copyright (C) 2014.
-
 ;; Permission is hereby granted, free of charge, to any person obtaining a copy
 ;; of this software and associated documentation files (the "Software"), to deal
 ;; in the Software without restriction, including without limitation the rights
@@ -19,11 +15,6 @@
 ;; LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 ;; OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 ;; SOFTWARE.
-
-(import
- (scheme base)
- (scheme eval)
- (rename (srfi 2) (and-let* land*)))
 
 (define-syntax expect
   (syntax-rules ()
@@ -60,43 +51,45 @@
                     '(rename (srfi 2) (and-let* land*))))
        (error "No syntax error detected, unexpectedly")))))
 
-(expect  (land* () 1) 1)
-(expect  (land* () 1 2) 2)
-(expect  (land* () ) #t)
+(define (run-tests)
+  (expect  (land* () 1) 1)
+  (expect  (land* () 1 2) 2)
+  (expect  (land* () ) #t)
 
-(expect (let ((x #f)) (land* (x))) #f)
-(expect (let ((x 1)) (land* (x))) 1)
-(expect (land* ((x #f)) ) #f)
-(expect (land* ((x 1)) ) 1)
-(must-be-a-syntax-error (land* ( #f (x 1))) )
-(expect (land* ( (#f) (x 1)) ) #f)
-(must-be-a-syntax-error (land* (2 (x 1))) )
-(expect (land* ( (2) (x 1)) ) 1)
-(expect (land* ( (x 1) (2)) ) 2)
-(expect (let ((x #f)) (land* (x) x)) #f)
-(expect (let ((x "")) (land* (x) x)) "")
-(expect (let ((x "")) (land* (x)  )) "")
-(expect (let ((x 1)) (land* (x) (+ x 1))) 2)
-(expect (let ((x #f)) (land* (x) (+ x 1))) #f)
-(expect (let ((x 1)) (land* (((positive? x))) (+ x 1))) 2)
-(expect (let ((x 1)) (land* (((positive? x))) )) #t)
-(expect (let ((x 0)) (land* (((positive? x))) (+ x 1))) #f)
-(expect (let ((x 1)) (land* (((positive? x)) (x (+ x 1))) (+ x 1)))  3)
+  (expect (let ((x #f)) (land* (x))) #f)
+  (expect (let ((x 1)) (land* (x))) 1)
+  (expect (land* ((x #f)) ) #f)
+  (expect (land* ((x 1)) ) 1)
+  (must-be-a-syntax-error (land* ( #f (x 1))) )
+  (expect (land* ( (#f) (x 1)) ) #f)
+  (must-be-a-syntax-error (land* (2 (x 1))) )
+  (expect (land* ( (2) (x 1)) ) 1)
+  (expect (land* ( (x 1) (2)) ) 2)
+  (expect (let ((x #f)) (land* (x) x)) #f)
+  (expect (let ((x "")) (land* (x) x)) "")
+  (expect (let ((x "")) (land* (x)  )) "")
+  (expect (let ((x 1)) (land* (x) (+ x 1))) 2)
+  (expect (let ((x #f)) (land* (x) (+ x 1))) #f)
+  (expect (let ((x 1)) (land* (((positive? x))) (+ x 1))) 2)
+  (expect (let ((x 1)) (land* (((positive? x))) )) #t)
+  (expect (let ((x 0)) (land* (((positive? x))) (+ x 1))) #f)
+  (expect (let ((x 1)) (land* (((positive? x)) (x (+ x 1))) (+ x 1)))  3)
 ;;; This is marked as must-be-error in the original test suite; see comments in
 ;;; the implementation for our rationale for intentionally breaking off from the
 ;;; specification.
-(let ((x 1)) (land* (((positive? x)) (x (+ x 1)) (x (+ x 1))) (+ x 1)))
+  (let ((x 1)) (land* (((positive? x)) (x (+ x 1)) (x (+ x 1))) (+ x 1)))
 
 
-(expect (let ((x 1)) (land* (x ((positive? x))) (+ x 1))) 2)
-(expect (let ((x 1)) (land* ( ((begin x)) ((positive? x))) (+ x 1))) 2)
-(expect (let ((x 0)) (land* (x ((positive? x))) (+ x 1))) #f)
-(expect (let ((x #f)) (land* (x ((positive? x))) (+ x 1))) #f)
-(expect (let ((x #f)) (land* ( ((begin x)) ((positive? x))) (+ x 1))) #f)
+  (expect (let ((x 1)) (land* (x ((positive? x))) (+ x 1))) 2)
+  (expect (let ((x 1)) (land* ( ((begin x)) ((positive? x))) (+ x 1))) 2)
+  (expect (let ((x 0)) (land* (x ((positive? x))) (+ x 1))) #f)
+  (expect (let ((x #f)) (land* (x ((positive? x))) (+ x 1))) #f)
+  (expect (let ((x #f)) (land* ( ((begin x)) ((positive? x))) (+ x 1))) #f)
 
-(expect  (let ((x 1)) (land* (x (y (- x 1)) ((positive? y))) (/ x y))) #f)
-(expect  (let ((x 0)) (land* (x (y (- x 1)) ((positive? y))) (/ x y))) #f)
-(expect  (let ((x #f)) (land* (x (y (- x 1)) ((positive? y))) (/ x y))) #f)
-(expect  (let ((x 3)) (land* (x (y (- x 1)) ((positive? y))) (/ x y))) 3/2)
+  (expect  (let ((x 1)) (land* (x (y (- x 1)) ((positive? y))) (/ x y))) #f)
+  (expect  (let ((x 0)) (land* (x (y (- x 1)) ((positive? y))) (/ x y))) #f)
+  (expect  (let ((x #f)) (land* (x (y (- x 1)) ((positive? y))) (/ x y))) #f)
+  (expect  (let ((x 3)) (land* (x (y (- x 1)) ((positive? y))) (/ x y))) 3/2)
 
-(display "\nAll tests passed\n")
+  (display "\nAll tests passed\n")
+  #t)
