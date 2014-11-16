@@ -4,7 +4,7 @@
  (library
   (path "srfi/1.sld")
   (version "1.0")
-  (homepage "http://srfi.schemers.org/srfi-1/")
+  (homepage "https://gitorious.org/taylan-scheme/srfi/")
   (maintainers "Taylan Ulrich Bayırlı/Kammer <taylanbayirli@gmail.com>"
                "Seth Alves <alves@hungry.com>")
   (authors "Olin Shivers <shivers@ai.mit.edu>")

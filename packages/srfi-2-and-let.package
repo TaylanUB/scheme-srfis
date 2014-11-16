@@ -4,9 +4,10 @@
  (library
   (path "srfi/2.sld")
   (version "1.0")
-  (homepage "http://srfi.schemers.org/srfi-2/")
+  (homepage "https://gitorious.org/taylan-scheme/srfi/")
   (maintainers "Taylan Ulrich Bayırlı/Kammer <taylanbayirli@gmail.com>"
                "Seth Alves <alves@hungry.com>")
   (authors "Taylan Ulrich Bayırlı/Kammer <taylanbayirli@gmail.com>")
-  (description "AND-LET*: an AND with local bindings, a guarded LET* special form")
+  (description "Provides `and-let*': an `and' with local bindings; a guarded
+`let*' special form.")
   (license lgpl3+)))
