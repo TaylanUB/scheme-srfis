@@ -23,7 +23,13 @@
 (import
  (scheme base)
  (scheme eval)
+ (scheme write)
  (rename (srfi 2) (and-let* land*)))
+
+(define (test-eval form)
+  (eval form (environment
+              '(scheme base)
+              '(rename (srfi 2) (and-let* land*)))))
 
 (define-syntax expect
   (syntax-rules ()
@@ -31,7 +37,7 @@
      (let ((expected-result expected-result*))
        (display "evaluating ")
        (write 'form)
-       (let ((real-result (eval 'form)))
+       (let ((real-result (test-eval 'form)))
          (if (equal? real-result expected-result)
              (begin
                (display "... gave the expected result: ")
@@ -55,9 +61,7 @@
               (display "catching what should be a syntax error: ")
               (display err)
               (newline)))
-       (eval 'form (environment
-                    '(scheme base)
-                    '(rename (srfi 2) (and-let* land*))))
+       (test-eval 'form)
        (error "No syntax error detected, unexpectedly")))))
 
 (expect  (land* () 1) 1)
