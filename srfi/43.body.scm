@@ -541,6 +541,24 @@
                                          vector-fold-right)
                        1)))))))
 
+;;; (VECTOR-MAP <f> <vector> ...) -> vector
+;;;     (F <elt> ...) -> value ; N vectors -> N args
+;;;   Constructs a new vector of the shortest length of the vector
+;;;   arguments.  Each element at index I of the new vector is mapped
+;;;   from the old vectors by (F I (vector-ref VECTOR I) ...).  The
+;;;   dynamic order of application of F is unspecified.
+(define (vector-map f vec . vectors)
+  (let ((f   (check-type procedure? f   vector-map))
+        (vec (check-type vector?    vec vector-map)))
+    (if (null? vectors)
+        (let ((len (vector-length vec)))
+          (%vector-map1! f (make-vector len) vec len))
+        (let ((len (%smallest-length vectors
+                                     (vector-length vec)
+                                     vector-map)))
+          (%vector-map2+! f (make-vector len) (cons vec vectors)
+                          len)))))
+
 ;;; (VECTOR-MAP! <f> <vector> ...) -> unspecified
 ;;;     (F <elt> ...) -> element' ; N vectors -> N args
 ;;;   Similar to VECTOR-MAP, but rather than mapping the new elements
@@ -558,6 +576,35 @@
                                           (vector-length vec)
                                           vector-map!)))
     (unspecified-value)))
+
+;;; (VECTOR-FOR-EACH <f> <vector> ...) -> unspecified
+;;;     (F <elt> ...) ; N vectors -> N args
+;;;   Simple vector iterator: applies F to each index in the range [0,
+;;;   LENGTH), where LENGTH is the length of the smallest vector
+;;;   argument passed, and the respective element at that index.  In
+;;;   contrast with VECTOR-MAP, F is reliably applied to each
+;;;   subsequent elements, starting at index 0 from left to right, in
+;;;   the vectors.
+(define vector-for-each
+  (letrec ((for-each1
+            (lambda (f vec i len)
+              (cond ((< i len)
+                     (f i (vector-ref vec i))
+                     (for-each1 f vec (+ i 1) len)))))
+           (for-each2+
+            (lambda (f vecs i len)
+              (cond ((< i len)
+                     (apply f i (vectors-ref vecs i))
+                     (for-each2+ f vecs (+ i 1) len))))))
+    (lambda (f vec . vectors)
+      (let ((f   (check-type procedure? f   vector-for-each))
+            (vec (check-type vector?    vec vector-for-each)))
+        (if (null? vectors)
+            (for-each1 f vec 0 (vector-length vec))
+            (for-each2+ f (cons vec vectors) 0
+                        (%smallest-length vectors
+                                          (vector-length vec)
+                                          vector-for-each)))))))
 
 ;;; (VECTOR-COUNT <predicate?> <vector> ...)
 ;;;       -> exact, nonnegative integer

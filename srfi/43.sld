@@ -12,7 +12,8 @@
 
    ;; Iteration
    vector-fold vector-fold-right
-   vector-map!
+   vector-map vector-map!
+   vector-for-each
    vector-count
 
    ;; Searching
