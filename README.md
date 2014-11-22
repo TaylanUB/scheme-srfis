@@ -54,10 +54,8 @@ platform, file a bug report.  If it contains a working patch it will
 most likely be accepted; otherwise it might get rejected on the
 grounds that the mentioned Scheme platform is not suitable.
 
-The author of this repository uses Chibi to test the libraries.
-Prepending the path to this repository to the load-path of Chibi (via
-the -I flag) will make the implementations here override any native
-SRFI implementations of Chibi.
+The author of this repository uses Chibi to test the libraries.  See
+the next section for instructions.
 
 Other than Chibi, the following platforms are explicitly intended to
 be supported once they implement R7RS:
@@ -82,6 +80,41 @@ The following do not intend to support R7RS, for various reasons:
 Source:
 <http://lists.scheme-reports.org/pipermail/scheme-reports/2011-October/001595.html>
 
+Using Chibi to test the implementations
+---------------------------------------
+
+Chibi Scheme is a clean, small, portable, and pretty much fully R7RS
+compliant Scheme platform, so it's a good choice for testing R7RS
+libraries.
+
+Version 0.7 has some bugs and limitations; compiling from the upstream
+repository is recommended at least until there is a newer release.
+One can run Chibi from its source directory after compilation, but it
+requires exporting `LD_LIBRARY_PATH=$chibi_dir`, and unless the
+executable `chibi-scheme` is run from `$chibi_dir`, one must add
+`$chibi_dir/lib` explicitly to the load path via the -I (capital 'i')
+or -A switches.
+
+Prepending the path to this repository to the load-path of Chibi via
+the -I (capital 'i') flag will make the implementations here override
+any native SRFI implementations of Chibi.  However, that may break
+Chibi's initialization process.
+
+Instead the -A switch may be used to append to the load-path, in which
+case Chibi's SRFI implementations will take priority.  That can be
+worked around by visiting the directory `$chibi_dir/lib/srfi` and
+moving away the following files: `1.sld`, `2.sld`, `26.sld`, `27.sld`,
+`8.sld`, `95.sld`, `99.sld`.  (This list may grow as Chibi adds more
+SRFIs which clash with those in this repository.)
+
+Most other SRFIs in the directory are ones that aren't in the scope of
+this repository.  (Specifically, many implement R7RS features, so
+don't remove them!)  The only remaining clash is `33.sld`, which seems
+to be needed for Chibi's initialization, so be careful to import the
+correct `(srfi 33)` when testing with Chibi, for example by renaming
+the `srfi/33.sld` in this repository, as well as the library declared
+in it, to some name that won't clash.
+
 Snow
 ----
 
@@ -95,7 +128,9 @@ for the libraries.)
 To install an SRFI, you can install
 [snow2](https://github.com/sethalves/snow2-client) and run:
 
-    snow2 -r http://taylanub-r7rs-srfis.s3-website-us-east-1.amazonaws.com/index.scm install '(srfi 1)'
+    snow2 -r http://taylanub-r7rs-srfis.s3-website-us-east-1.amazonaws.com/index.scm install '(srfi n)'
+
+for any SRFI-`n`.
 
 The repository is turned into a Snow repository by running `snow2
 package` in the top-level directory.
