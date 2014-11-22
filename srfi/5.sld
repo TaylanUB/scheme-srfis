@@ -24,9 +24,6 @@
 ;; SRFI is trivial to implement, because the license of the reference
 ;; implementation made me irk.
 
-;; Eval this in Emacs:
-;; (put 'standard-let 'scheme-indent-function 1)
-
 ;;; Code:
 
 (define-library (srfi 5)
