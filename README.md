@@ -20,9 +20,8 @@ show.  Therefore:
   they're not in this repository, if the alternative is using horrid
   hacks.
 
-- Write test suites in SRFI-64 or SRFI-78.  It's also fine to use any
-  ad-hoc test suites found within reference implementations though,
-  like in SRFI-2.
+- Test suites are written in a strict format using SRFI-64 for human
+  and machine consumption; see below.
 
 - For those SRFIs which cannot be implemented in pure R7RS, it's fine
   to write libraries that just wrap features of specific platforms via
@@ -135,6 +134,8 @@ for any SRFI-`n`.
 The repository is turned into a Snow repository by running `snow2
 package` in the top-level directory.
 
+Test suites are also available as `(srfi-tests n)` for any SRFI-`n`.
+
 Concrete conventions
 --------------------
 
@@ -144,6 +145,19 @@ Concrete conventions
 - Libraries go into a file named `n.sld` under the `srfi` directory,
   where `n` is the SRFI number.  The library is correspondingly named
   `(srfi n)`.
+
+- Test suites are libraries too, and go into `n.sld` under the
+  `srfi-tests` directory, and are named accordingly.  They must export
+  a procedure named `run-tests` defined via `define-tests` from
+  `(srfi-tests aux)`.  The first argument to this macro must be the
+  identifier `run-tests`, and the second must be the string `"SRFI-n"`
+  for every SRFI-`n`.  The rest of the arguments make up the body of
+  an SRFI-64 test suite; the initial `test-begin` and final `test-end`
+  forms must not appear in this body, since `define-tests` handles
+  that.
+
+- The following rules about libraries apply to all libraries in this
+  project, including SRFI implementations and test suites.
 
 - The order of things in a library declaration is:
 
@@ -169,9 +183,6 @@ Concrete conventions
   needed; otherwise copy it to `n.body.scm` and make changes there.
   This is because some reference implementations change ad-hoc without
   version control; we want to know what version we forked.
-
-- Put test suites into a file named `n.test.scm`.  These should be
-  R7RS programs, but not libraries.
 
 - Follow Riastradh's Lisp Style Rules for new code:
   <http://mumble.net/~campbell/scheme/style.txt>
