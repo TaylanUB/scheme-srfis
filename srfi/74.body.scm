@@ -24,9 +24,6 @@
 ;; CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 ;; SOFTWARE.
 
-;; Eval this in Emacs:
-;; (put 'index-iterate 'scheme-indent-function 4)
-
 (define endianness-native (native-endianness))
 
 (define (bytevector-s8-ref b k)
@@ -208,3 +205,7 @@
 
 (define uint-list->bytevector (make-int-list->bytevector bytevector-uint-set!))
 (define sint-list->bytevector (make-int-list->bytevector bytevector-sint-set!))
+
+;; Local Variables:
+;; eval: (put 'index-iterate 'scheme-indent-function 4)
+;; End:
