@@ -10,12 +10,11 @@
    test-runner-group-path test-group test-group-with-cleanup
    test-result-ref test-result-set! test-result-clear test-result-remove
    test-result-kind test-passed?
-   test-log-to-file
    ;; Misc test-runner functions
    test-runner? test-runner-reset test-runner-null
    test-runner-simple test-runner-current test-runner-factory test-runner-get
    test-runner-create test-runner-test-name
-   ;; test-runner field setter and getter functions - see %test-record-define:
+   ;; test-runner field setter and getter functions
    test-runner-pass-count test-runner-pass-count!
    test-runner-fail-count test-runner-fail-count!
    test-runner-xpass-count test-runner-xpass-count!
