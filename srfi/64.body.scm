@@ -506,7 +506,7 @@
          (syntax
           (let* ((r (test-runner-get))
                  (name tname))
-            (test-result-alist! r (cons (cons 'test-name tname) line))
+            (test-result-alist! r `((test-name . ,name) . ,line))
             (%test-comp1body r expr))))
         (((mac expr) line)
          (syntax
@@ -519,7 +519,7 @@
        (syntax
         (let* ((r (test-runner-get))
                (name tname))
-          (test-result-alist! r (cons (cons 'test-name tname) line))
+          (test-result-alist! r `((test-name . ,name) . ,line))
           (%test-comp2body r comp expected expr))))
       (((mac expected expr) line comp)
        (syntax
@@ -539,7 +539,7 @@
          (syntax
           (let* ((r (test-runner-get))
                  (name tname))
-            (test-result-alist! r (cons (cons 'test-name tname) line))
+            (test-result-alist! r `((test-name . ,name) . ,line))
             (%test-comp2body r (%test-approximate= error) expected expr))))
         (((mac expected expr error) line)
          (syntax
@@ -558,7 +558,7 @@
       ((test-assert tname test-expression)
        (let* ((r (test-runner-get))
               (name tname))
-         (test-result-alist! r '((test-name . tname)))
+         (test-result-alist! r `((test-name . ,name)))
          (%test-comp1body r test-expression)))
       ((test-assert test-expression)
        (let* ((r (test-runner-get)))
@@ -569,7 +569,7 @@
       ((%test-comp2 comp tname expected expr)
        (let* ((r (test-runner-get))
               (name tname))
-         (test-result-alist! r (list (cons 'test-name tname)))
+         (test-result-alist! r `((test-name . ,name)))
          (%test-comp2body r comp expected expr)))
       ((%test-comp2 comp expected expr)
        (let* ((r (test-runner-get)))
@@ -683,7 +683,7 @@
          (syntax
           (let* ((r (test-runner-get))
                  (name tname))
-            (test-result-alist! r (cons (cons 'test-name tname) line))
+            (test-result-alist! r `((test-name . ,name) . ,line))
             (%test-error r etype expr))))
         (((mac etype expr) line)
          (syntax
