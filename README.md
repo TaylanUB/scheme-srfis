@@ -91,17 +91,17 @@ repository is recommended at least until there is a newer release.
 One can run Chibi from its source directory after compilation, but it
 requires exporting `LD_LIBRARY_PATH=$chibi_dir`, and unless the
 executable `chibi-scheme` is run from `$chibi_dir`, one must add
-`$chibi_dir/lib` explicitly to the load path via the -I (capital 'i')
-or -A switches.
+`$chibi_dir/lib` explicitly to the load path via the `-I` (capital
+'i') or `-A` switches.
 
 Prepending the path to this repository to the load-path of Chibi via
-the -I (capital 'i') flag will make the implementations here override
-any native SRFI implementations of Chibi.  However, that may break
-Chibi's initialization process.
+the `-I` (capital 'i') flag will make the implementations here
+override any native SRFI implementations of Chibi.  However, that may
+break Chibi's initialization process.
 
-Instead the -A switch may be used to append to the load-path, in which
-case Chibi's SRFI implementations will take priority.  That can be
-worked around by visiting the directory `$chibi_dir/lib/srfi` and
+Instead the `-A` switch may be used to append to the load-path, in
+which case Chibi's SRFI implementations will take priority.  That can
+be worked around by visiting the directory `$chibi_dir/lib/srfi` and
 moving away the following files: `1.sld`, `2.sld`, `26.sld`, `27.sld`,
 `8.sld`, `95.sld`, `99.sld`.  (This list may grow as Chibi adds more
 SRFIs which clash with those in this repository.)
