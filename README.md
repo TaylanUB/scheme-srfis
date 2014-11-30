@@ -400,7 +400,7 @@ you pay attention.
 - SRFI-51: UNTESTED
 - SRFI-52: withdrawn
 - SRFI-53: withdrawn
-- SRFI-54: UNTESTED
+- SRFI-54: check
 - SRFI-55: r7rs (import)
 - SRFI-56: withdrawn
 - SRFI-57: UNTESTED
