@@ -6,5 +6,8 @@
    (eval . (put 'test-eqv 'scheme-indent-function 2))
    (eval . (put 'test-eq 'scheme-indent-function 2))
    (eval . (put 'test-equal 'scheme-indent-function 2))
+   (eval . (put 'test-group 'scheme-indent-function 1))
+   (eval . (put 'test-group-with-cleanup 'scheme-indent-function 1))
+   (eval . (put 'test-with-runner 'scheme-indent-function 1))
    (eval . (put 'guard 'scheme-indent-function 1))
    (eval . (put 'lambda* 'scheme-indent-function 1)))))
