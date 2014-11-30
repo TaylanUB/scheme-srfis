@@ -258,6 +258,12 @@ identifiers with uppercase letters, you might want to use the
 SRFI-64
 -------
 
+The reference implementation was not conforming to the specification,
+so I made it conform.  I also ripped out source file/line reporting
+(name your tests instead; and for unnamed tests the expression will be
+used as a name) and overall rewrote most of the code while keeping the
+basic logic from the original reference implementation.
+
 - `test-read-eval-string`: This now takes an optional `env` argument
   to specify in what environment to evaluate.  Passing `#f` will
   explicitly attempt to call `eval` with a single argument, which is
