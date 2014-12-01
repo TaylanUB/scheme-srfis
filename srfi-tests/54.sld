@@ -36,7 +36,7 @@
       (test-equal " 1,29.99,5" (cat 129.995 10 '(#\, 2)))
       (test-equal "  +129,995" (cat 129995 10 '(#\,) 'sign))
       (test-equal "130" (cat (cat 129.995 0.) '(0 -1)))
-      (cond-expand (chibi (test-expect-fail 2)))
+      (cond-expand (chibi (test-expect-fail 2)) (else))
       (test-equal "#i#o+307/2" (cat 99.5 10 'sign 'octal))
       (test-equal "  #o+307/2" (cat 99.5 10 'sign 'octal 'exact))
       (test-equal "#o+443" (cat #x123 'octal 'sign))
