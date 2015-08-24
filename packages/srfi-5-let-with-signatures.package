@@ -4,9 +4,17 @@
  (library
   (path "srfi/5.sld")
   (version "1.0")
-  (homepage "https://gitorious.org/taylan-scheme/srfi/")
+  (homepage "http://srfi.schemers.org/srfi-5/srfi-5.html")
   (maintainers "Taylan Ulrich Bayırlı/Kammer <taylanbayirli@gmail.com>"
                "Seth Alves <alves@hungry.com>")
-  (authors "Taylan Ulrich Bayırlı/Kammer <taylanbayirli@gmail.com>")
-  (description "A compatible `let' form with signatures and rest arguments.")
-  (license lgpl3+)))
+  (authors "Andy Gaynor")
+  (description "A compatible let form with signatures and rest arguments")
+  (license bsd))
+ (library
+  (path "srfi-tests/5/tests.sld")
+  (use-for test)
+  (version "1.0")
+  (homepage "https://github.com/taylanub/scheme-srfis")
+  (maintainers "Taylan Ulrich Bayırlı/Kammer <taylanbayirli@gmail.com>"
+               "Seth Alves <alves@hungry.com>")
+  (description "placeholder for tests for srfi-5")))

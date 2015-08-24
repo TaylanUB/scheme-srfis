@@ -1,0 +1,53 @@
+(define-syntax test
+  (syntax-rules ()
+    ((test form)
+     (cond ((not form) (error "Test failed" form))
+           (else 'OK)))
+    ((test form0 form1)
+     (cond ((not (equal? form0 form1)) (error "Test failed" form0 form1))
+           (else 'OK)))
+    ))
+
+(define (run-tests)
+
+  ;; (test-begin "srfi-2")
+
+  (test 1 (land* () 1))
+  (test 2 (land* () 1 2))
+  (test #t (land* () ))
+
+  (test #f (let ((x #f)) (land* (x))))
+  (test 1 (let ((x 1)) (land* (x))))
+  (test #f (land* ((x #f)) ))
+  (test 1 (land* ((x 1)) ))
+  ;; (test-syntax-error (land* ( #f (x 1))))
+  (test #f (land* ( (#f) (x 1)) ))
+  ;; (test-syntax-error (land* (2 (x 1))))
+  (test 1 (land* ( (2) (x 1)) ))
+  (test 2 (land* ( (x 1) (2)) ))
+  (test #f (let ((x #f)) (land* (x) x)))
+  (test "" (let ((x "")) (land* (x) x)))
+  (test "" (let ((x "")) (land* (x)  )))
+  (test 2 (let ((x 1)) (land* (x) (+ x 1))))
+  (test #f (let ((x #f)) (land* (x) (+ x 1))))
+  (test 2 (let ((x 1)) (land* (((positive? x))) (+ x 1))))
+  (test #t (let ((x 1)) (land* (((positive? x))) )))
+  (test #f (let ((x 0)) (land* (((positive? x))) (+ x 1))))
+  (test 3  (let ((x 1)) (land* (((positive? x)) (x (+ x 1))) (+ x 1))))
+  (test 4
+        (let ((x 1))
+          (land* (((positive? x)) (x (+ x 1)) (x (+ x 1))) (+ x 1))))
+
+  (test 2 (let ((x 1)) (land* (x ((positive? x))) (+ x 1))))
+  (test 2 (let ((x 1)) (land* ( ((begin x)) ((positive? x))) (+ x 1))))
+  (test #f (let ((x 0)) (land* (x ((positive? x))) (+ x 1))))
+  (test #f (let ((x #f)) (land* (x ((positive? x))) (+ x 1))))
+  (test #f (let ((x #f)) (land* ( ((begin x)) ((positive? x))) (+ x 1))))
+
+  (test  #f (let ((x 1)) (land* (x (y (- x 1)) ((positive? y))) (/ x y))))
+  (test  #f (let ((x 0)) (land* (x (y (- x 1)) ((positive? y))) (/ x y))))
+  (test  #f (let ((x #f)) (land* (x (y (- x 1)) ((positive? y))) (/ x y))))
+  (test  3/2 (let ((x 3)) (land* (x (y (- x 1)) ((positive? y))) (/ x y))))
+
+  ;; (test-end)
+  )
