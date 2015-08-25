@@ -9,4 +9,4 @@
                "Seth Alves <alves@hungry.com>")
   (authors "Olin Shivers <shivers@ai.mit.edu>")
   (description "List-processing library.")
-  (license bsd-style)))
+  (license non-copyleft)))
