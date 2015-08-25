@@ -300,7 +300,7 @@
            (%test-runner-skip-save! r (cons skip-list skip-save))
            (%test-runner-fail-save! r (cons fail-list fail-save))
            (%test-runner-count-list! r (cons (cons total-count count)
-                                                  count-list))
+                                             count-list))
            (test-runner-group-stack! r (cons name group-stack))))))))
 
 (define-syntax test-end
