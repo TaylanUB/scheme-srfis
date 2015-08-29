@@ -117,7 +117,7 @@
 
 (define test-result-name!
   (case-lambda
-    ((name) (test-result-name (test-runner-get) name))
+    ((name) (test-result-name! (test-runner-get) name))
     ((runner name) (test-result-set! runner 'test-name name))))
 
 (define test-result-expression
