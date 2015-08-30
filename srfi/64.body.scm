@@ -214,8 +214,8 @@
 
 (define (test-on-group-begin-simple runner name count)
   (if (null? (test-runner-group-stack runner))
-      (format #t "%%%% Test suite begin: ~a\n" name)
-      (format #t "Group begin: ~a\n" name)))
+      (format #t "%%%% Test suite begin: ~a~%" name)
+      (format #t "Group begin: ~a~%" name)))
 
 (define (test-on-test-begin-simple runner)
   (values))
@@ -233,13 +233,13 @@
          (label (string-join (append (test-runner-group-path runner)
                                      (list name))
                              "/")))
-    (format #t "[~a] ~a\n" result-kind-name label)))
+    (format #t "[~a] ~a~%" result-kind-name label)))
 
 (define (test-on-group-end-simple runner)
   (let ((name (car (test-runner-group-stack runner))))
     (if (= 1 (length (test-runner-group-stack runner)))
-        (format #t "%%%% Test suite end: ~a\n" name)
-        (format #t "Group end: ~a\n" name))))
+        (format #t "%%%% Test suite end: ~a~%" name)
+        (format #t "Group end: ~a~%" name))))
 
 (define (test-on-final-simple runner)
   (define (maybe-display label value)
@@ -257,9 +257,9 @@
    "# of skipped tests        " (test-runner-skip-count runner)))
 
 (define (test-on-bad-count-simple runner count expected-count)
-  (format #t "*** Total number of tests was ~a but should be ~a. ***\n"
+  (format #t "*** Total number of tests was ~a but should be ~a. ***~%"
           count expected-count)
-  (display "*** Discrepancy indicates testsuite error or exceptions. ***\n"))
+  (format #t "*** Discrepancy indicates testsuite error or exceptions. ***~%"))
 
 (define (test-on-bad-end-name-simple runner begin-name end-name)
   (error (format #f "test-end ~a does not match test-begin ~a"
@@ -492,8 +492,8 @@
    ((procedure? type)
     (type error))
    (else
-    (format #t "WARNING: unknown error type predicate: ~a\n" type)
-    (format #t "         error was: ~a\n" error)
+    (format #t "WARNING: unknown error type predicate: ~a~%" type)
+    (format #t "         error was: ~a~%" error)
     #f)))
 
 (define-syntax test-error
