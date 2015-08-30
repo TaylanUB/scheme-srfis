@@ -233,7 +233,11 @@
          (label (string-join (append (test-runner-group-path runner)
                                      (list name))
                              "/")))
-    (format #t "[~a] ~a~%" result-kind-name label)))
+    (format #t "[~a] ~a~%" result-kind-name label)
+    (when (eq? result-kind 'fail)
+      (let ((error (test-result-ref runner 'actual-error)))
+        (when error
+          (format #t "Exception: ~a~%" error))))))
 
 (define (test-on-group-end-simple runner)
   (let ((name (car (test-runner-group-stack runner))))
