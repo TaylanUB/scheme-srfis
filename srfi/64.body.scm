@@ -177,11 +177,26 @@
         (else
          (error "not a valid test specifier" spec))))
 
+;;; Beware: all predicates must be called because they might have side-effects;
+;;; no early returning or and/or short-circuiting allowed.
+
 (define (any-pred preds object)
-  (any (lambda (pred) (pred object)) preds))
+  (let loop ((matched? #f)
+             (preds preds))
+    (if (null? preds)
+        matched?
+        (let ((result ((car preds) object)))
+          (loop (or matched? result)
+                (cdr preds))))))
 
 (define (every-pred preds object)
-  (every (lambda (pred) (pred object)) preds))
+  (let loop ((failed? #f)
+             (preds preds))
+    (if (null? preds)
+        (not failed?)
+        (let ((result ((car preds) object)))
+          (loop (and (not failed?) result)
+                (cdr preds))))))
 
 (define (test-match-all . specs)
   (let ((preds (map make-pred specs)))
