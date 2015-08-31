@@ -237,7 +237,7 @@
                              ((skip) "SKIP")))
          (name (let ((test-name (test-result-name runner)))
                  (if (string=? "" test-name)
-                     (test-result-expression runner)
+                     (format #f "~a" (test-result-expression runner))
                      test-name)))
          (label (string-join (append (test-runner-group-path runner)
                                      (list name))
