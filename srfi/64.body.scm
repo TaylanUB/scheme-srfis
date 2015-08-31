@@ -221,6 +221,15 @@
   (values))
 
 (define (test-on-test-end-simple runner)
+  (define (string-join strings delimiter)
+    (if (null? strings)
+        ""
+        (let loop ((result (car strings))
+                   (rest (cdr strings)))
+          (if (null? rest)
+              result
+              (loop (string-append result delimiter (car rest))
+                    (cdr rest))))))
   (let* ((result-kind (test-result-kind runner))
          (result-kind-name (case result-kind
                              ((pass) "PASS") ((fail) "FAIL")

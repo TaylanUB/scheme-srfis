@@ -45,7 +45,6 @@
    (scheme read)
    (scheme write)
    (srfi 1)
-   (srfi 13)
    (srfi 35)
    (srfi 48))
   (include "64.body.scm"))
