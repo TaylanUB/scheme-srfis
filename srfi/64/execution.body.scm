@@ -346,6 +346,15 @@
 
 ;;; Test runner control flow
 
+(define-syntax test-with-runner
+  (syntax-rules ()
+    ((_ runner body body* ...)
+     (let ((saved-runner (test-runner-current)))
+       (dynamic-wind
+         (lambda () (test-runner-current runner))
+         (lambda () body body* ...)
+         (lambda () (test-runner-current saved-runner)))))))
+
 (define (test-apply first . rest)
   (let ((runner (if (test-runner? first)
                     first
@@ -359,14 +368,5 @@
         (%test-runner-run-list! runner run-list)
         (proc)
         (%test-runner-run-list! runner saved-run-list)))))
-
-(define-syntax test-with-runner
-  (syntax-rules ()
-    ((_ runner body body* ...)
-     (let ((saved-runner (test-runner-current)))
-       (dynamic-wind
-         (lambda () (test-runner-current runner))
-         (lambda () body body* ...)
-         (lambda () (test-runner-current saved-runner)))))))
 
 ;;; execution.scm ends here
