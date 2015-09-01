@@ -8,6 +8,7 @@
    (srfi 1)
    (srfi 35)
    (srfi 48)
-   (srfi 64 test-runner))
+   (srfi 64 test-runner)
+   (srfi 64 source-info))
   (include-library-declarations "execution.exports.sld")
   (include "execution.body.scm"))
