@@ -303,7 +303,7 @@
     ((_ expr)
      (test-error #f #t expr))
     ((_ error-type expr)
-     ((test-error #f error-type expr)))
+     (test-error #f error-type expr))
     ((_ name-expr error-type-expr expr)
      (let ((runner (test-runner-get))
            (name name-expr))
