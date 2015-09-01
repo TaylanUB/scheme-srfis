@@ -25,6 +25,34 @@
 ;; CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 ;; SOFTWARE.
 
+;;; Helpers
+
+(define (string-join strings delimiter)
+  (if (null? strings)
+      ""
+      (let loop ((result (car strings))
+                 (rest (cdr strings)))
+        (if (null? rest)
+            result
+            (loop (string-append result delimiter (car rest))
+                  (cdr rest))))))
+
+(define (truncate-string string length)
+  (let* ((fill "...")
+         (fill-len (string-length fill))
+         (string-len (string-length string)))
+    (if (<= string-len (+ length 3))
+        string
+        (let-values (((q r) (floor/ length 4)))
+          ;; Left part gets 3/4 plus the remainder.
+          (let ((left-end (+ (* q 3) r))
+                (right-start (- string-len q)))
+            (string-append (substring string 0 left-end)
+                           fill
+                           (substring string right-start string-len)))))))
+
+;;; Main
+
 (define (test-runner-simple)
   (let ((runner (test-runner-null)))
     (test-runner-reset runner)
@@ -59,15 +87,6 @@
   (values))
 
 (define (test-on-test-end-simple runner)
-  (define (string-join strings delimiter)
-    (if (null? strings)
-        ""
-        (let loop ((result (car strings))
-                   (rest (cdr strings)))
-          (if (null? rest)
-              result
-              (loop (string-append result delimiter (car rest))
-                    (cdr rest))))))
   (let* ((result-kind (test-result-kind runner))
          (result-kind-name (case result-kind
                              ((pass) "PASS") ((fail) "FAIL")
@@ -75,7 +94,9 @@
                              ((skip) "SKIP")))
          (name (let ((name (test-runner-test-name runner)))
                  (if (string=? "" name)
-                     (format #f "~a" (test-result-ref runner 'source-form))
+                     (truncate-string
+                      (format #f "~a" (test-result-ref runner 'source-form))
+                      30)
                      name)))
          (label (string-join (append (test-runner-group-path runner)
                                      (list name))
