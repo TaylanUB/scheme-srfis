@@ -30,10 +30,10 @@
 
 (define-syntax test-begin
   (syntax-rules ()
-    ((_ suite-name)
-     (test-begin suite-name #f))
-    ((_ suite-name count)
-     (let ((name suite-name))
+    ((_ <name>)
+     (test-begin <name> #f))
+    ((_ <name> count)
+     (let ((name <name>))
        (when (not (test-runner-current))
          (test-runner-current (test-runner-create)))
        (let ((r (test-runner-current)))
@@ -55,8 +55,8 @@
   (syntax-rules ()
     ((_)
      (test-end #f))
-    ((_ suite-name)
-     (let ((name suite-name))
+    ((_ <name>)
+     (let ((name <name>))
        (let* ((r (test-runner-get))
               (groups (test-runner-group-stack r)))
          (test-result-clear r)
@@ -83,24 +83,24 @@
 
 (define-syntax test-group
   (syntax-rules ()
-    ((_ suite-name body body* ...)
+    ((_ <name> <body> <body>* ...)
      (let ((runner (test-runner-get))
-           (name suite-name))
+           (name <name>))
        (test-result-clear runner)
        (test-result-set! runner 'name name)
        (unless (test-skip? runner)
          (dynamic-wind
            (lambda () (test-begin name))
-           (lambda () body body* ...)
+           (lambda () <body> <body>* ...)
            (lambda () (test-end name))))))))
 
 (define-syntax test-group-with-cleanup
   (syntax-rules ()
-    ((_ suite-name body body* ... cleanup)
-     (test-group suite-name
+    ((_ <name> <body> <body>* ... <cleanup>)
+     (test-group <name>
        (dynamic-wind (lambda () #f)
-                     (lambda () body body* ...)
-                     (lambda () cleanup))))))
+                     (lambda () <body> <body>* ...)
+                     (lambda () <cleanup>))))))
 
 
 ;;; Skipping, expected-failing, matching
@@ -135,9 +135,12 @@
 
 (define (make-pred spec)
   (cond
-   ((procedure? spec) spec)
-   ((integer? spec) (test-match-nth 1 spec))
-   ((string? spec) (test-match-name spec))
+   ((procedure? spec)
+    spec)
+   ((integer? spec)
+    (test-match-nth 1 spec))
+   ((string? spec)
+    (test-match-name spec))
    (else
     (error "not a valid test specifier" spec))))
 
@@ -179,12 +182,12 @@
 
 (define-syntax false-if-error
   (syntax-rules ()
-    ((_ expression runner)
+    ((_ <expression> <runner>)
      (guard (error
              (else
-              (test-result-set! runner 'actual-error error)
+              (test-result-set! <runner> 'actual-error error)
               #f))
-       expression))))
+       <expression>))))
 
 ;;; This must be syntax for set-source-info! to work right.
 (define-syntax test-prelude
@@ -232,67 +235,66 @@
 
 (define-syntax test-assert
   (syntax-rules ()
-    ((_ expr)
-     (test-assert #f expr))
-    ((_ name-expr expr)
-     (let ((runner (test-runner-get))
-           (name name-expr))
-       (when (test-prelude runner name 'expr)
-         (let ((val (false-if-error expr runner)))
+    ((_ <expr>)
+     (test-assert #f <expr>))
+    ((_ <name> <expr>)
+     (let ((runner (test-runner-get)))
+       (when (test-prelude runner <name> '<expr>)
+         (let ((val (false-if-error <expr> runner)))
            (test-result-set! runner 'actual-value val)
            (set-result-kind! runner val)))
        (test-postlude runner)))))
 
 (define-syntax test-compare
   (syntax-rules ()
-    ((_ compare expected expr)
-     (test-compare compare #f expected expr))
-    ((_ compare name-expr expected-expr expr)
+    ((_ <compare> <expected> <expr>)
+     (test-compare <compare> #f <expected> <expr>))
+    ((_ <compare> <name> <expected> <expr>)
      (let ((runner (test-runner-get))
-           (name name-expr))
-       (when (test-prelude runner name 'expr)
-         (let ((expected expected-expr))
+           (name <name>))
+       (when (test-prelude runner name '<expr>)
+         (let ((expected <expected>))
            (test-result-set! runner 'expected-value expected)
            (let ((pass? (false-if-error
-                         (let ((val expr))
+                         (let ((val <expr>))
                            (test-result-set! runner 'actual-value val)
-                           (compare expected val))
+                           (<compare> expected val))
                          runner)))
              (set-result-kind! runner pass?))))
        (test-postlude runner)))))
 
 (define-syntax test-equal
   (syntax-rules ()
-    ((_ . rest)
-     (test-compare equal? . rest))))
+    ((_ . <rest>)
+     (test-compare equal? . <rest>))))
 
 (define-syntax test-eqv
   (syntax-rules ()
-    ((_ . rest)
-     (test-compare eqv? . rest))))
+    ((_ . <rest>)
+     (test-compare eqv? . <rest>))))
 
 (define-syntax test-eq
   (syntax-rules ()
-    ((_ . rest)
-     (test-compare eq? . rest))))
+    ((_ . <rest>)
+     (test-compare eq? . <rest>))))
 
-(define (approx= error)
+(define (approx= margin)
   (lambda (value expected)
     (let ((rval (real-part value))
           (ival (imag-part value))
           (rexp (real-part expected))
           (iexp (imag-part expected)))
-      (and (>= rval (- rexp error))
-           (>= ival (- iexp error))
-           (<= rval (+ rexp error))
-           (<= ival (+ iexp error))))))
+      (and (>= rval (- rexp margin))
+           (>= ival (- iexp margin))
+           (<= rval (+ rexp margin))
+           (<= ival (+ iexp margin))))))
 
 (define-syntax test-approximate
   (syntax-rules ()
-    ((_ expected expr error)
-     (test-approximate #f expected expr error))
-    ((_ test-name expected expr error)
-     (test-compare (approx= error) test-name expected expr))))
+    ((_ <expected> <expr> <margin>)
+     (test-approximate #f <expected> <expr> <error>))
+    ((_ <name> <expected> <expr> <error>)
+     (test-compare (approx= <margin>) <name> <expected> <expr>))))
 
 (define (error-matches? error type)
   (cond
@@ -309,20 +311,20 @@
 
 (define-syntax test-error
   (syntax-rules ()
-    ((_ expr)
-     (test-error #f #t expr))
-    ((_ error-type expr)
-     (test-error #f error-type expr))
-    ((_ name-expr error-type-expr expr)
+    ((_ <expr>)
+     (test-error #f #t <expr>))
+    ((_ <error-type> <expr>)
+     (test-error #f <error-type> <expr>))
+    ((_ <name> <error-type> <expr>)
      (let ((runner (test-runner-get))
-           (name name-expr))
-       (when (test-prelude runner name 'expr)
-         (let ((error-type error-type-expr))
+           (name <name>))
+       (when (test-prelude runner name '<expr>)
+         (let ((error-type <error-type>))
            (test-result-set! runner 'expected-error error-type)
            (let ((pass? (guard (error (else (test-result-set!
                                              runner 'actual-error error)
                                             (error-matches? error error-type)))
-                          (let ((val expr))
+                          (let ((val <expr>))
                             (test-result-set! runner 'actual-value val))
                           #f)))
              (set-result-kind! runner pass?))))
@@ -348,11 +350,11 @@
 
 (define-syntax test-with-runner
   (syntax-rules ()
-    ((_ runner body body* ...)
+    ((_ <runner> <body> <body>* ...)
      (let ((saved-runner (test-runner-current)))
        (dynamic-wind
-         (lambda () (test-runner-current runner))
-         (lambda () body body* ...)
+         (lambda () (test-runner-current <runner>))
+         (lambda () <body> <body>* ...)
          (lambda () (test-runner-current saved-runner)))))))
 
 (define (test-apply first . rest)
