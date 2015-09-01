@@ -140,12 +140,12 @@
 (define test-result-expression
   (case-lambda
     (() (test-result-expression (test-runner-get)))
-    ((runner) (test-result-ref runner 'expression))))
+    ((runner) (test-result-ref runner 'source-form))))
 
 (define test-result-expression!
   (case-lambda
     ((expression) (test-result-expression! (test-runner-get) expression))
-    ((runner expression) (test-result-set! runner 'expression expression))))
+    ((runner expression) (test-result-set! runner 'source-form expression))))
 
 (define test-result-kind
   (case-lambda
