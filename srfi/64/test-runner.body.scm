@@ -127,37 +127,13 @@
 (define (test-result-clear runner)
   (test-result-alist! runner '()))
 
-(define test-result-name
-  (case-lambda
-    (() (test-result-name (test-runner-get)))
-    ((runner) (test-result-ref runner 'test-name ""))))
-
-(define test-result-name!
-  (case-lambda
-    ((name) (test-result-name! (test-runner-get) name))
-    ((runner name) (test-result-set! runner 'test-name name))))
-
-(define test-result-expression
-  (case-lambda
-    (() (test-result-expression (test-runner-get)))
-    ((runner) (test-result-ref runner 'source-form))))
-
-(define test-result-expression!
-  (case-lambda
-    ((expression) (test-result-expression! (test-runner-get) expression))
-    ((runner expression) (test-result-set! runner 'source-form expression))))
+(define (test-runner-test-name runner)
+  (or (test-result-ref runner 'name) ""))
 
 (define test-result-kind
   (case-lambda
     (() (test-result-kind (test-runner-get)))
     ((runner) (test-result-ref runner 'result-kind))))
-
-(define test-result-kind!
-  (case-lambda
-    ((kind) (test-result-kind! (test-runner-get) kind))
-    ((runner kind) (test-result-set! runner 'result-kind kind))))
-
-(define test-runner-test-name test-result-name)
 
 (define test-passed?
   (case-lambda

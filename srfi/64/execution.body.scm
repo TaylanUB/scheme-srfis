@@ -87,7 +87,7 @@
      (let ((runner (test-runner-get))
            (name suite-name))
        (test-result-clear runner)
-       (test-result-name! runner name)
+       (test-result-set! runner 'name name)
        (unless (test-skip? runner)
          (dynamic-wind
            (lambda () (test-begin name))
@@ -152,7 +152,7 @@
 
 (define (test-match-name name)
   (lambda (runner)
-    (equal? name (test-result-name runner))))
+    (equal? name (test-runner-test-name runner))))
 
 ;;; Beware: all predicates must be called because they might have side-effects;
 ;;; no early returning or and/or short-circuiting of procedure calls allowed.
@@ -196,14 +196,15 @@
        (test-result-clear runner)
        (set-source-info! runner)
        (when name
-         (test-result-name! runner name))
-       (test-result-expression! runner expression)
+         (test-result-set! runner 'name name))
+       (test-result-set! runner 'source-form expression)
        (let ((skip? (test-skip? runner)))
          (if skip?
-             (test-result-kind! runner 'skip)
+             (test-result-set! runner 'result-kind 'skip)
              (let ((fail-list (%test-runner-fail-list runner)))
                (when (any-pred fail-list runner)
-                 (test-result-kind! runner 'xfail)))) ;just for later inspection
+                 ;; For later inspection only.
+                 (test-result-set! runner 'result-kind 'xfail))))
          ((test-runner-on-test-begin runner) runner)
          (not skip?))))))
 
@@ -224,9 +225,10 @@
     ((test-runner-on-test-end runner) runner)))
 
 (define (set-result-kind! runner pass?)
-  (test-result-kind! runner (if (eq? (test-result-kind runner) 'xfail)
-                                (if pass? 'xpass 'xfail)
-                                (if pass? 'pass 'fail))))
+  (test-result-set! runner 'result-kind
+                    (if (eq? (test-result-kind runner) 'xfail)
+                        (if pass? 'xpass 'xfail)
+                        (if pass? 'pass 'fail))))
 
 (define-syntax test-assert
   (syntax-rules ()

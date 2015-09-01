@@ -37,11 +37,7 @@
  ;; State
  test-result-ref test-result-set!
  test-result-remove test-result-clear
- test-result-name test-result-name!
- test-result-expression test-result-expression!
- test-result-kind test-result-kind!
- test-runner-test-name
- test-passed?
+ test-runner-test-name test-result-kind test-passed?
 
  ;; Factory and current instance
  test-runner-factory test-runner-create
