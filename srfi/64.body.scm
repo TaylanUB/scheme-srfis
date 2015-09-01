@@ -195,7 +195,7 @@
     (if (null? preds)
         (not failed?)
         (let ((result ((car preds) object)))
-          (loop (and (not failed?) result)
+          (loop (or failed? (not result))
                 (cdr preds))))))
 
 (define (test-match-all . specs)
