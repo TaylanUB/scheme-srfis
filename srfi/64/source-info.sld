@@ -32,41 +32,34 @@
 
     (define-syntax set-source-info!
       (cond-expand
-       ((or kawa mzscheme guile-2)
+       ((or kawa guile-2)
         (lambda (stx)
           (syntax-case stx ()
-            ((_ runner)
+            ((_ <runner>)
              (let ((file (syntax-source-file stx))
                    (line (syntax-source-line stx)))
                (quasisyntax
                 (begin
-                  (test-result-set! runner 'source-file (unsyntax file))
-                  (test-result-set! runner 'source-line (unsyntax line)))))))))
+                  (test-result-set! <runner>
+                                    'source-file (unsyntax file))
+                  (test-result-set! <runner>
+                                    'source-line (unsyntax line)))))))))
        (else
         (syntax-rules ()
-          ((_ runner)
+          ((_ <runner>)
            (values))))))
 
     (define (syntax-source-file stx)
       (cond-expand
        (kawa
         (syntax-source stx))
-       (mzscheme
-        (let ((source (syntax-source stx)))
-          (cond
-           ((string? source)
-            file)
-           ((path? source)
-            (path->string source))
-           (else
-            #f))))
        (guile-2
         (let ((source (syntax-source stx)))
           (and source (assq-ref source 'filename))))))
 
     (define (syntax-source-line stx)
       (cond-expand
-       ((or kawa mzscheme)
+       (kawa
         (syntax-line stx))
        (guile-2
         (let ((source (syntax-source stx)))
