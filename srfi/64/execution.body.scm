@@ -186,19 +186,26 @@
               #f))
        expression))))
 
-(define (test-prelude runner name expression)
-  (test-result-clear runner)
-  (when name
-    (test-result-name! runner name))
-  (test-result-expression! runner expression)
-  (let ((skip? (test-skip? runner)))
-    (if skip?
-        (test-result-kind! runner 'skip)
-        (let ((fail-list (%test-runner-fail-list runner)))
-          (when (any-pred fail-list runner)
-            (test-result-kind! runner 'xfail)))) ;just for later inspection
-    ((test-runner-on-test-begin runner) runner)
-    (not skip?)))
+;;; This must be syntax for set-source-info! to work right.
+(define-syntax test-prelude
+  (syntax-rules ()
+    ((_ <runner> <name> <expression>)
+     (let ((runner <runner>)
+           (name <name>)
+           (expression <expression>))
+       (test-result-clear runner)
+       (set-source-info! runner)
+       (when name
+         (test-result-name! runner name))
+       (test-result-expression! runner expression)
+       (let ((skip? (test-skip? runner)))
+         (if skip?
+             (test-result-kind! runner 'skip)
+             (let ((fail-list (%test-runner-fail-list runner)))
+               (when (any-pred fail-list runner)
+                 (test-result-kind! runner 'xfail)))) ;just for later inspection
+         ((test-runner-on-test-begin runner) runner)
+         (not skip?))))))
 
 (define (test-postlude runner)
   (let ((result-kind (test-result-kind runner)))
