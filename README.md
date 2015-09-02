@@ -258,11 +258,10 @@ identifiers with uppercase letters, you might want to use the
 SRFI-64
 -------
 
-The reference implementation was not conforming to the specification,
-so I made it conform.  I also ripped out source file/line reporting
-(name your tests instead; and for unnamed tests the expression will be
-used as a name) and overall rewrote most of the code while keeping the
-basic logic from the original reference implementation.
+Log file writing has been taken out, because the standard output has
+been expanded to include all information you need.  Notify me if the
+log file is still crucial to your workflow.  (Users of terminals with
+no good scroll-back/search-back?)
 
 - `test-read-eval-string`: This now takes an optional `env` argument
   to specify in what environment to evaluate.  Passing `#f` will
@@ -410,7 +409,7 @@ you pay attention.
 - SRFI-61: UNTESTED
 - SRFI-62: r7rs
 - SRFI-63: UNTESTED
-- SRFI-64: UNTESTED
+- SRFI-64: check
 - SRFI-65: withdrawn
 - SRFI-66: r7rs (bytevectors)
 - SRFI-67: UNTESTED
