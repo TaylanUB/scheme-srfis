@@ -84,15 +84,18 @@
 (define-syntax test-group
   (syntax-rules ()
     ((_ <name> <body> <body>* ...)
-     (let ((runner (test-runner-get))
-           (name <name>))
-       (test-result-clear runner)
-       (test-result-set! runner 'name name)
-       (unless (test-skip? runner)
-         (dynamic-wind
-           (lambda () (test-begin name))
-           (lambda () <body> <body>* ...)
-           (lambda () (test-end name))))))))
+     (begin
+       (when (not (test-runner-current))
+         (test-runner-current (test-runner-create)))
+       (let ((runner (test-runner-get))
+             (name <name>))
+         (test-result-clear runner)
+         (test-result-set! runner 'name name)
+         (unless (test-skip? runner)
+           (dynamic-wind
+             (lambda () (test-begin name))
+             (lambda () <body> <body>* ...)
+             (lambda () (test-end name)))))))))
 
 (define-syntax test-group-with-cleanup
   (syntax-rules ()
