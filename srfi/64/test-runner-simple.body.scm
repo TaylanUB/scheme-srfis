@@ -65,6 +65,9 @@
     (test-runner-on-bad-end-name! runner test-on-bad-end-name-simple)
     runner))
 
+(when (not (test-runner-factory))
+  (test-runner-factory test-runner-simple))
+
 (define (test-on-group-begin-simple runner name count)
   (if (null? (test-runner-group-stack runner))
       (format #t "Test suite begin: ~a~%" name)
