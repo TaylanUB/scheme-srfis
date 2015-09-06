@@ -306,12 +306,12 @@ of this SRFI should be simple to convert; a global replace of "blob"
 to "bytevector" in a body of code will get most of the job done.
 
 - `endianness`: Given a library system that makes imported bindings
-  immutable, macros such as this one (which simulate enums) are both
-  redundant, and harmful, because they either have to match their
-  input unhygienically, or will be prone to accidental shadowing of
-  the simple identifiers they expect as input.  Therefore, this macro
-  is *not* provided, and instead the three bindings `endianness-big`,
-  `endianness-little`, and `endianness-native` exported.
+  immutable, macros such as this one are both redundant, and harmful
+  at the absence of unhygienic macro input matching because they will
+  be prone to accidental shadowing of the expected input identifier.
+  Therefore, this macro is *not* provided, and instead the three
+  bindings `endianness-big`, `endianness-little`, and
+  `endianness-native` exported.
 
 - `endianness-native`: So far this is just set to big; you may set the
   `native-endianness` parameter from the `(srfi aux)` module to
