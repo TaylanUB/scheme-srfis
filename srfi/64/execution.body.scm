@@ -294,10 +294,10 @@
 
 (define-syntax test-approximate
   (syntax-rules ()
-    ((_ <expected> <expr> <margin>)
-     (test-approximate #f <expected> <expr> <error>))
-    ((_ <name> <expected> <expr> <error>)
-     (test-compare (approx= <margin>) <name> <expected> <expr>))))
+    ((_ <expected> <expr> <error-margin>)
+     (test-approximate #f <expected> <expr> <error-margin>))
+    ((_ <name> <expected> <expr> <error-margin>)
+     (test-compare (approx= <error-margin>) <name> <expected> <expr>))))
 
 (define (error-matches? error type)
   (cond
