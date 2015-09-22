@@ -32,13 +32,19 @@
 
 ;;; Grouping
 
+(define (maybe-install-default-runner suite-name)
+  (when (not (test-runner-current))
+    (let ((runner (test-runner-simple))
+          (log-file (string-append suite-name ".log")))
+      (test-runner-log-file! runner log-file)
+      (test-runner-current runner))))
+
 (define test-begin
   (case-lambda
     ((name)
      (test-begin name #f))
     ((name count)
-     (when (not (test-runner-current))
-       (test-runner-current (test-runner-create)))
+     (maybe-install-default-runner name)
      (let ((r (test-runner-current)))
        (let ((skip-list (%test-runner-skip-list r))
              (skip-save (%test-runner-skip-save r))
@@ -90,8 +96,7 @@
 
 (define (%test-group name thunk)
   (begin
-    (when (not (test-runner-current))
-      (test-runner-current (test-runner-create)))
+    (maybe-install-default-runner name)
     (let ((runner (test-runner-get)))
       (test-result-clear runner)
       (test-result-set! runner 'name name)

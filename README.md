@@ -258,10 +258,13 @@ identifiers with uppercase letters, you might want to use the
 SRFI-64
 -------
 
-Log file writing has been taken out, because the standard output has
-been expanded to include all information you need.  Notify me if the
-log file is still crucial to your workflow.  (Users of terminals with
-no good scroll-back/search-back?)
+- `test-runner-simple`: In line with the specification (and contrary
+  to the reference implementation), this returns a runner that does no
+  logging and does not use its "aux value" field.
+
+However, when you don't install any test runner explicitly before
+starting your test suite, a modified simple test runner is installed
+which does logging.
 
 - `test-read-eval-string`: This now takes an optional `env` argument
   to specify in what environment to evaluate.  Passing `#f` will

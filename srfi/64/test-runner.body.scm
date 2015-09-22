@@ -67,7 +67,10 @@
   (on-bad-count test-runner-on-bad-count test-runner-on-bad-count!)
   (on-bad-end-name test-runner-on-bad-end-name test-runner-on-bad-end-name!)
 
-  (aux-value test-runner-aux-value test-runner-aux-value!))
+  (aux-value test-runner-aux-value test-runner-aux-value!)
+
+  (log-file test-runner-log-file test-runner-log-file!)
+  (log-port test-runner-log-port test-runner-log-port!))
 
 (define (test-runner-group-path runner)
   (reverse (test-runner-group-stack runner)))

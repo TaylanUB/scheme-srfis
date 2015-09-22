@@ -1,6 +1,7 @@
 (define-library (srfi 64 test-runner-simple)
   (import
    (scheme base)
+   (scheme file)
    (scheme write)
    (srfi 48)
    (srfi 64 test-runner))

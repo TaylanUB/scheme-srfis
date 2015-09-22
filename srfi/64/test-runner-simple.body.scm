@@ -51,6 +51,12 @@
                            fill
                            (substring string right-start string-len)))))))
 
+(define (print runner format-string . args)
+  (apply format #t format-string args)
+  (let ((port (test-runner-log-port runner)))
+    (when port
+      (apply format port format-string args))))
+
 ;;; Main
 
 (define (test-runner-simple)
@@ -70,21 +76,36 @@
 
 (define (test-on-group-begin-simple runner name count)
   (if (null? (test-runner-group-stack runner))
-      (format #t "Test suite begin: ~a~%" name)
-      (format #t "Group begin: ~a~%" name)))
+      (begin
+        (maybe-start-logging runner)
+        (print runner "Test suite begin: ~a~%" name))
+      (print runner "Group begin: ~a~%" name)))
 
 (define (test-on-group-end-simple runner)
   (let ((name (car (test-runner-group-stack runner))))
     (if (= 1 (length (test-runner-group-stack runner)))
-        (format #t "Test suite end: ~a~%" name)
-        (format #t "Group end: ~a~%" name))))
+        (print runner "Test suite end: ~a~%" name)
+        (print runner "Group end: ~a~%" name))))
 
 (define (test-on-final-simple runner)
-  (format #t "Passes:            ~a\n" (test-runner-pass-count runner))
-  (format #t "Expected failures: ~a\n" (test-runner-xfail-count runner))
-  (format #t "Failures:          ~a\n" (test-runner-fail-count runner))
-  (format #t "Unexpected passes: ~a\n" (test-runner-xpass-count runner))
-  (format #t "Skipped tests:     ~a~%" (test-runner-skip-count runner)))
+  (print runner "Passes:            ~a\n" (test-runner-pass-count runner))
+  (print runner "Expected failures: ~a\n" (test-runner-xfail-count runner))
+  (print runner "Failures:          ~a\n" (test-runner-fail-count runner))
+  (print runner "Unexpected passes: ~a\n" (test-runner-xpass-count runner))
+  (print runner "Skipped tests:     ~a~%" (test-runner-skip-count runner))
+  (maybe-finish-logging runner))
+
+(define (maybe-start-logging runner)
+  (let ((log-file (test-runner-log-file runner)))
+    (when log-file
+      (test-runner-log-port! runner (open-output-file log-file))
+      (print runner "Writing log file: ~a~%" log-file))))
+
+(define (maybe-finish-logging runner)
+  (let ((log-file (test-runner-log-file runner)))
+    (when log-file
+      (print runner "Wrote log file: ~a~%" log-file)
+      (close-output-port (test-runner-log-port runner)))))
 
 (define (test-on-test-begin-simple runner)
   (values))
@@ -104,14 +125,14 @@
          (label (string-join (append (test-runner-group-path runner)
                                      (list name))
                              "/")))
-    (format #t "[~a] ~a~%" result-kind-name label)
+    (print runner "[~a] ~a~%" result-kind-name label)
     (when (memq result-kind '(fail xpass))
       (let ((nil (cons #f #f)))
         (define (found? value)
           (not (eq? nil value)))
         (define (maybe-print value message)
           (when (found? value)
-            (format #t message value)))
+            (print runner message value)))
         (let ((file (test-result-ref runner 'source-file))
               (line (test-result-ref runner 'source-line))
               (expression (test-result-ref runner 'source-form))
@@ -121,8 +142,8 @@
               (actual-error (test-result-ref runner 'actual-error nil)))
           (newline)
           (when line
-            (format #t "Source:\n~a:~a\n~%" (or file "(unknown file)") line))
-          (format #t "Expression:\n~a\n~%" expression)
+            (print runner "Source:\n~a:~a\n~%" (or file "(unknown file)") line))
+          (print runner "Expression:\n~a\n~%" expression)
           (maybe-print expected-value "Expected value:\n~a\n~%")
           (maybe-print expected-error "Expected error:\n~a\n~%")
           (when (or (found? expected-value) (found? expected-error))
@@ -130,9 +151,10 @@
           (maybe-print actual-error "Got error:\n~a\n~%"))))))
 
 (define (test-on-bad-count-simple runner count expected-count)
-  (format #t "*** Total number of tests was ~a but should be ~a. ***~%"
+  (print runner "*** Total number of tests was ~a but should be ~a. ***~%"
           count expected-count)
-  (format #t "*** Discrepancy indicates testsuite error or exceptions. ***~%"))
+  (print runner
+         "*** Discrepancy indicates testsuite error or exceptions. ***~%"))
 
 (define (test-on-bad-end-name-simple runner begin-name end-name)
   (error (format #f "Test-end \"~a\" does not match test-begin \"~a\"."
