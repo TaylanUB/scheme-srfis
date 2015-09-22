@@ -25,6 +25,10 @@
 ;; CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 ;; SOFTWARE.
 
+;;; Note: to prevent producing massive amounts of code from the macro-expand
+;;; phase (which makes compile times suffer and may hit code size limits in some
+;;; systems), keep macro bodies minimal by delegating work to procedures.
+
 
 ;;; Grouping
 
