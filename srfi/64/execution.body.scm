@@ -244,7 +244,7 @@
     ((_ <expr>)
      (test-assert #f <expr>))
     ((_ <name> <expr>)
-     (%test-assert (source-info) <name> '<expr> (lambda () <expr>)))))
+     (%test-assert (source-info <expr>) <name> '<expr> (lambda () <expr>)))))
 
 (define (%test-assert source-info name form thunk)
   (let ((runner (test-runner-get)))
@@ -259,8 +259,8 @@
     ((_ <compare> <expected> <expr>)
      (test-compare <compare> #f <expected> <expr>))
     ((_ <compare> <name> <expected> <expr>)
-     (%test-compare
-      (source-info) <compare> <name> <expected> '<expr> (lambda () <expr>)))))
+     (%test-compare (source-info <expr>) <compare> <name> <expected> '<expr>
+                    (lambda () <expr>)))))
 
 (define (%test-compare source-info compare name expected form thunk)
   (let ((runner (test-runner-get)))
@@ -327,8 +327,8 @@
     ((_ <error-type> <expr>)
      (test-error #f <error-type> <expr>))
     ((_ <name> <error-type> <expr>)
-     (%test-error
-      (source-info) <name> <error-type> '<expr> (lambda () <expr>)))))
+     (%test-error (source-info <expr>) <name> <error-type> '<expr>
+                  (lambda () <expr>)))))
 
 (define (%test-error source-info name error-type form thunk)
   (let ((runner (test-runner-get)))

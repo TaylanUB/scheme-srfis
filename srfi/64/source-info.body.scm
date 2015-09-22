@@ -25,14 +25,15 @@
    ((or kawa guile-2)
     (lambda (stx)
       (syntax-case stx ()
-        ((_)
-         (let ((file (syntax-source-file stx))
-               (line (syntax-source-line stx)))
+        ((_ <x>)
+         (let* ((stx (cond-expand (kawa (syntax <x>)) (guile stx) (else)))
+                (file (syntax-source-file stx))
+                (line (syntax-source-line stx)))
            (quasisyntax
             (cons (unsyntax file) (unsyntax line))))))))
    (else
     (syntax-rules ()
-      ((_)
+      ((_ <x>)
        #f)))))
 
 (define (syntax-source-file stx)
