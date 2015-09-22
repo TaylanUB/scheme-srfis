@@ -69,6 +69,8 @@
     (test-runner-on-test-end! runner test-on-test-end-simple)
     (test-runner-on-bad-count! runner test-on-bad-count-simple)
     (test-runner-on-bad-end-name! runner test-on-bad-end-name-simple)
+    (test-runner-log-file! runner #f)
+    (test-runner-log-port! runner #f)
     runner))
 
 (when (not (test-runner-factory))
