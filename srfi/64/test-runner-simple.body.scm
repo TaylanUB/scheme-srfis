@@ -41,7 +41,7 @@
   (let* ((fill "...")
          (fill-len (string-length fill))
          (string-len (string-length string)))
-    (if (<= string-len (+ length 3))
+    (if (<= string-len (+ length fill-len))
         string
         (let-values (((q r) (floor/ length 4)))
           ;; Left part gets 3/4 plus the remainder.
