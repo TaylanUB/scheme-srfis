@@ -20,22 +20,20 @@
 ;; CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 ;; SOFTWARE.
 
-(define-syntax set-source-info!
+(define-syntax source-info
   (cond-expand
    ((or kawa guile-2)
     (lambda (stx)
       (syntax-case stx ()
-        ((_ <runner>)
+        ((_)
          (let ((file (syntax-source-file stx))
                (line (syntax-source-line stx)))
            (quasisyntax
-            (begin
-              (test-result-set! <runner> 'source-file (unsyntax file))
-              (test-result-set! <runner> 'source-line (unsyntax line)))))))))
+            (cons (unsyntax file) (unsyntax line))))))))
    (else
     (syntax-rules ()
-      ((_ <runner>)
-       (values))))))
+      ((_)
+       #f)))))
 
 (define (syntax-source-file stx)
   (cond-expand
@@ -52,5 +50,10 @@
    (guile-2
     (let ((source (syntax-source stx)))
       (and source (assq-ref source 'line))))))
+
+(define (set-source-info! runner source-info)
+  (when source-info
+    (test-result-set! runner 'source-file (car source-info))
+    (test-result-set! runner 'source-line (cdr source-info))))
 
 ;;; source-info.body.scm ends here

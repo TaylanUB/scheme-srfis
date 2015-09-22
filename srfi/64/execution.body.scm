@@ -28,74 +28,74 @@
 
 ;;; Grouping
 
-(define-syntax test-begin
-  (syntax-rules ()
-    ((_ <name>)
-     (test-begin <name> #f))
-    ((_ <name> count)
-     (let ((name <name>))
-       (when (not (test-runner-current))
-         (test-runner-current (test-runner-create)))
-       (let ((r (test-runner-current)))
-         (let ((skip-list (%test-runner-skip-list r))
-               (skip-save (%test-runner-skip-save r))
-               (fail-list (%test-runner-fail-list r))
-               (fail-save (%test-runner-fail-save r))
-               (total-count (%test-runner-total-count r))
-               (count-list (%test-runner-count-list r))
-               (group-stack (test-runner-group-stack r)))
-           ((test-runner-on-group-begin r) r name count)
-           (%test-runner-skip-save! r (cons skip-list skip-save))
-           (%test-runner-fail-save! r (cons fail-list fail-save))
-           (%test-runner-count-list! r (cons (cons total-count count)
-                                             count-list))
-           (test-runner-group-stack! r (cons name group-stack))))))))
+(define test-begin
+  (case-lambda
+    ((name)
+     (test-begin name #f))
+    ((name count)
+     (when (not (test-runner-current))
+       (test-runner-current (test-runner-create)))
+     (let ((r (test-runner-current)))
+       (let ((skip-list (%test-runner-skip-list r))
+             (skip-save (%test-runner-skip-save r))
+             (fail-list (%test-runner-fail-list r))
+             (fail-save (%test-runner-fail-save r))
+             (total-count (%test-runner-total-count r))
+             (count-list (%test-runner-count-list r))
+             (group-stack (test-runner-group-stack r)))
+         ((test-runner-on-group-begin r) r name count)
+         (%test-runner-skip-save! r (cons skip-list skip-save))
+         (%test-runner-fail-save! r (cons fail-list fail-save))
+         (%test-runner-count-list! r (cons (cons total-count count)
+                                           count-list))
+         (test-runner-group-stack! r (cons name group-stack)))))))
 
-(define-syntax test-end
-  (syntax-rules ()
-    ((_)
+(define test-end
+  (case-lambda
+    (()
      (test-end #f))
-    ((_ <name>)
-     (let ((name <name>))
-       (let* ((r (test-runner-get))
-              (groups (test-runner-group-stack r)))
-         (test-result-clear r)
-         (when (null? groups)
-           (error "test-end not in a group"))
-         (when (and name (not (equal? name (car groups))))
-           ((test-runner-on-bad-end-name r) r name (car groups)))
-         (let* ((count-list (%test-runner-count-list r))
-                (expected-count (cdar count-list))
-                (saved-count (caar count-list))
-                (group-count (- (%test-runner-total-count r) saved-count)))
-           (when (and expected-count
-                      (not (= expected-count group-count)))
-             ((test-runner-on-bad-count r) r group-count expected-count))
-           ((test-runner-on-group-end r) r)
-           (test-runner-group-stack! r (cdr (test-runner-group-stack r)))
-           (%test-runner-skip-list! r (car (%test-runner-skip-save r)))
-           (%test-runner-skip-save! r (cdr (%test-runner-skip-save r)))
-           (%test-runner-fail-list! r (car (%test-runner-fail-save r)))
-           (%test-runner-fail-save! r (cdr (%test-runner-fail-save r)))
-           (%test-runner-count-list! r (cdr count-list))
-           (when (null? (test-runner-group-stack r))
-             ((test-runner-on-final r) r))))))))
+    ((name)
+     (let* ((r (test-runner-get))
+            (groups (test-runner-group-stack r)))
+       (test-result-clear r)
+       (when (null? groups)
+         (error "test-end not in a group"))
+       (when (and name (not (equal? name (car groups))))
+         ((test-runner-on-bad-end-name r) r name (car groups)))
+       (let* ((count-list (%test-runner-count-list r))
+              (expected-count (cdar count-list))
+              (saved-count (caar count-list))
+              (group-count (- (%test-runner-total-count r) saved-count)))
+         (when (and expected-count
+                    (not (= expected-count group-count)))
+           ((test-runner-on-bad-count r) r group-count expected-count))
+         ((test-runner-on-group-end r) r)
+         (test-runner-group-stack! r (cdr (test-runner-group-stack r)))
+         (%test-runner-skip-list! r (car (%test-runner-skip-save r)))
+         (%test-runner-skip-save! r (cdr (%test-runner-skip-save r)))
+         (%test-runner-fail-list! r (car (%test-runner-fail-save r)))
+         (%test-runner-fail-save! r (cdr (%test-runner-fail-save r)))
+         (%test-runner-count-list! r (cdr count-list))
+         (when (null? (test-runner-group-stack r))
+           ((test-runner-on-final r) r)))))))
 
 (define-syntax test-group
   (syntax-rules ()
-    ((_ <name> <body> <body>* ...)
-     (begin
-       (when (not (test-runner-current))
-         (test-runner-current (test-runner-create)))
-       (let ((runner (test-runner-get))
-             (name <name>))
-         (test-result-clear runner)
-         (test-result-set! runner 'name name)
-         (unless (test-skip? runner)
-           (dynamic-wind
-             (lambda () (test-begin name))
-             (lambda () <body> <body>* ...)
-             (lambda () (test-end name)))))))))
+    ((_ <name> <body> . <body>*)
+     (%test-group <name> (lambda () <body> . <body>*)))))
+
+(define (%test-group name thunk)
+  (begin
+    (when (not (test-runner-current))
+      (test-runner-current (test-runner-create)))
+    (let ((runner (test-runner-get)))
+      (test-result-clear runner)
+      (test-result-set! runner 'name name)
+      (unless (test-skip? runner)
+        (dynamic-wind
+          (lambda () (test-begin name))
+          thunk
+          (lambda () (test-end name)))))))
 
 (define-syntax test-group-with-cleanup
   (syntax-rules ()
@@ -192,27 +192,21 @@
               #f))
        <expression>))))
 
-;;; This must be syntax for set-source-info! to work right.
-(define-syntax test-prelude
-  (syntax-rules ()
-    ((_ <runner> <name> <expression>)
-     (let ((runner <runner>)
-           (name <name>)
-           (expression <expression>))
-       (test-result-clear runner)
-       (set-source-info! runner)
-       (when name
-         (test-result-set! runner 'name name))
-       (test-result-set! runner 'source-form expression)
-       (let ((skip? (test-skip? runner)))
-         (if skip?
-             (test-result-set! runner 'result-kind 'skip)
-             (let ((fail-list (%test-runner-fail-list runner)))
-               (when (any-pred fail-list runner)
-                 ;; For later inspection only.
-                 (test-result-set! runner 'result-kind 'xfail))))
-         ((test-runner-on-test-begin runner) runner)
-         (not skip?))))))
+(define (test-prelude source-info runner name form)
+  (test-result-clear runner)
+  (set-source-info! runner source-info)
+  (when name
+    (test-result-set! runner 'name name))
+  (test-result-set! runner 'source-form form)
+  (let ((skip? (test-skip? runner)))
+    (if skip?
+        (test-result-set! runner 'result-kind 'skip)
+        (let ((fail-list (%test-runner-fail-list runner)))
+          (when (any-pred fail-list runner)
+            ;; For later inspection only.
+            (test-result-set! runner 'result-kind 'xfail))))
+    ((test-runner-on-test-begin runner) runner)
+    (not skip?)))
 
 (define (test-postlude runner)
   (let ((result-kind (test-result-kind runner)))
@@ -241,30 +235,35 @@
     ((_ <expr>)
      (test-assert #f <expr>))
     ((_ <name> <expr>)
-     (let ((runner (test-runner-get)))
-       (when (test-prelude runner <name> '<expr>)
-         (let ((val (false-if-error <expr> runner)))
-           (test-result-set! runner 'actual-value val)
-           (set-result-kind! runner val)))
-       (test-postlude runner)))))
+     (%test-assert (source-info) <name> '<expr> (lambda () <expr>)))))
+
+(define (%test-assert source-info name form thunk)
+  (let ((runner (test-runner-get)))
+    (when (test-prelude source-info runner name form)
+      (let ((val (false-if-error (thunk) runner)))
+        (test-result-set! runner 'actual-value val)
+        (set-result-kind! runner val)))
+    (test-postlude runner)))
 
 (define-syntax test-compare
   (syntax-rules ()
     ((_ <compare> <expected> <expr>)
      (test-compare <compare> #f <expected> <expr>))
     ((_ <compare> <name> <expected> <expr>)
-     (let ((runner (test-runner-get))
-           (name <name>))
-       (when (test-prelude runner name '<expr>)
-         (let ((expected <expected>))
-           (test-result-set! runner 'expected-value expected)
-           (let ((pass? (false-if-error
-                         (let ((val <expr>))
-                           (test-result-set! runner 'actual-value val)
-                           (<compare> expected val))
-                         runner)))
-             (set-result-kind! runner pass?))))
-       (test-postlude runner)))))
+     (%test-compare
+      (source-info) <compare> <name> <expected> '<expr> (lambda () <expr>)))))
+
+(define (%test-compare source-info compare name expected form thunk)
+  (let ((runner (test-runner-get)))
+    (when (test-prelude source-info runner name form)
+      (test-result-set! runner 'expected-value expected)
+      (let ((pass? (false-if-error
+                    (let ((val (thunk)))
+                      (test-result-set! runner 'actual-value val)
+                      (compare expected val))
+                    runner)))
+        (set-result-kind! runner pass?)))
+    (test-postlude runner)))
 
 (define-syntax test-equal
   (syntax-rules ()
@@ -319,19 +318,21 @@
     ((_ <error-type> <expr>)
      (test-error #f <error-type> <expr>))
     ((_ <name> <error-type> <expr>)
-     (let ((runner (test-runner-get))
-           (name <name>))
-       (when (test-prelude runner name '<expr>)
-         (let ((error-type <error-type>))
-           (test-result-set! runner 'expected-error error-type)
-           (let ((pass? (guard (error (else (test-result-set!
-                                             runner 'actual-error error)
-                                            (error-matches? error error-type)))
-                          (let ((val <expr>))
-                            (test-result-set! runner 'actual-value val))
-                          #f)))
-             (set-result-kind! runner pass?))))
-       (test-postlude runner)))))
+     (%test-error
+      (source-info) <name> <error-type> '<expr> (lambda () <expr>)))))
+
+(define (%test-error source-info name error-type form thunk)
+  (let ((runner (test-runner-get)))
+    (when (test-prelude source-info runner name form)
+      (test-result-set! runner 'expected-error error-type)
+      (let ((pass? (guard (error (else (test-result-set!
+                                        runner 'actual-error error)
+                                       (error-matches? error error-type)))
+                     (let ((val (thunk)))
+                       (test-result-set! runner 'actual-value val))
+                     #f)))
+        (set-result-kind! runner pass?)))
+    (test-postlude runner)))
 
 (define test-read-eval-string
   (case-lambda
@@ -353,11 +354,11 @@
 
 (define-syntax test-with-runner
   (syntax-rules ()
-    ((_ <runner> <body> <body>* ...)
+    ((_ <runner> <body> . <body>*)
      (let ((saved-runner (test-runner-current)))
        (dynamic-wind
          (lambda () (test-runner-current <runner>))
-         (lambda () <body> <body>* ...)
+         (lambda () <body> . <body>*)
          (lambda () (test-runner-current saved-runner)))))))
 
 (define (test-apply first . rest)
