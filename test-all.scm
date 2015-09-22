@@ -1,7 +1,6 @@
 (import (scheme base)
         (scheme eval)
         (scheme file)
-        (scheme process-context)
         (srfi 1)
         (srfi 48)
         (srfi 64))
@@ -18,7 +17,4 @@
 
 (test-end "SRFI")
 
-(let ((runner (test-runner-current)))
-  (unless (and (= 0 (test-runner-xpass-count runner))
-               (= 0 (test-runner-fail-count runner)))
-    (exit 1)))
+(test-exit)

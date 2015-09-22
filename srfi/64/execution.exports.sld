@@ -13,4 +13,6 @@
  test-error test-read-eval-string
 
  test-apply test-with-runner
+
+ test-exit
  )

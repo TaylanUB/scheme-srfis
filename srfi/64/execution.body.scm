@@ -384,4 +384,14 @@
         (proc)
         (%test-runner-run-list! runner saved-run-list)))))
 
+
+;;; Indicate success/failure via exit status
+
+(define (test-exit)
+  (let ((runner (test-runner-current)))
+    (if (and (zero? (test-runner-xpass-count runner))
+             (zero? (test-runner-fail-count runner)))
+        (exit 0)
+        (exit 1))))
+
 ;;; execution.scm ends here

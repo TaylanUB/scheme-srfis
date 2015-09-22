@@ -272,6 +272,9 @@ which does logging.
   an error in R7RS.  Leaving the argument out will try to use a sane
   platform-specific default but falls back to `#f`.
 
+- `test-exit`: A non-standard extension: exits with a non-zero exit
+   status if any tests failed or unexpectedly passed.
+
 SRFI-66
 -------
 

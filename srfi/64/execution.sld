@@ -4,6 +4,7 @@
    (scheme case-lambda)
    (scheme complex)
    (scheme eval)
+   (scheme process-context)
    (scheme read)
    (srfi 1)
    (srfi 35)
