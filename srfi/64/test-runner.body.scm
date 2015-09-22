@@ -102,6 +102,8 @@
     (test-runner-on-test-end! runner test-null-callback)
     (test-runner-on-bad-count! runner test-null-callback)
     (test-runner-on-bad-end-name! runner test-null-callback)
+    (test-runner-log-file! runner #f)
+    (test-runner-log-port! runner #f)
     runner))
 
 
