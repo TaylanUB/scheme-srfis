@@ -42,7 +42,9 @@
     (syntax-source stx))
    (guile-2
     (let ((source (syntax-source stx)))
-      (and source (assq-ref source 'filename))))))
+      (and source (assq-ref source 'filename))))
+   (else
+    #f)))
 
 (define (syntax-source-line stx)
   (cond-expand
@@ -50,7 +52,9 @@
     (syntax-line stx))
    (guile-2
     (let ((source (syntax-source stx)))
-      (and source (assq-ref source 'line))))))
+      (and source (assq-ref source 'line))))
+   (else
+    #f)))
 
 (define (set-source-info! runner source-info)
   (when source-info
