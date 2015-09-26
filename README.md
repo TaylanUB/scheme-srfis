@@ -20,6 +20,13 @@ show.  Therefore:
   they're not in this repository, if the alternative is using horrid
   hacks.
 
+- Feel free to use R6RS libraries in your SRFI implementation
+  (imported via the R7RS library system), if the alternative is using
+  horrid hacks.  In particular, the Larceny project hosts a number of
+  R7RS libraries named `(r6rs *)`, under `tools/R6RS/` in its source
+  tree, which implement the APIs of the corresponding `(rnrs *)`
+  libraries of R6RS; feel free to use those.
+
 - Test suites are written in a strict format using SRFI-64 for human
   and machine consumption; see below.
 
@@ -302,27 +309,6 @@ case I marked it as subsumed by R7RS below because it seems that R7RS
 improved on the section which this SRFI requests improvements in,
 although not exactly in the way this SRFI asks for.
 
-SRFI-74
--------
-
-Since the "blob" type in this SRFI is obsoleted by bytevectors, we
-don't define it; we define bytevector equivalents of the procedures in
-this SRFI which don't already have a bytevector equivalent.  Old uses
-of this SRFI should be simple to convert; a global replace of "blob"
-to "bytevector" in a body of code will get most of the job done.
-
-- `endianness`: Given a library system that makes imported bindings
-  immutable, macros such as this one are both redundant, and harmful
-  at the absence of unhygienic macro input matching because they will
-  be prone to accidental shadowing of the expected input identifier.
-  Therefore, this macro is *not* provided, and instead the three
-  bindings `endianness-big`, `endianness-little`, and
-  `endianness-native` exported.
-
-- `endianness-native`: So far this is just set to big; you may set the
-  `native-endianness` parameter from the `(srfi aux)` module to
-  `endianness-little` before loading this library.
-
 
 Progress
 ========
@@ -333,6 +319,7 @@ All SRFI are listed here, and marked with one of the following:
 - withdrawn: It's a withdrawn SRFI.
 - deprecated: Deprecated by another SRFI.
 - platform: Ought to be implemented at the platform level.
+- r6rs: Subsumed by R6RS in some way.
 - r7rs: Subsumed by R7RS in some way.
 - UNTESTED: Yet lacks a test-suite.
 - DRAFT: Still in draft status.
@@ -425,7 +412,7 @@ you pay attention.
 - SRFI-71: UNTESTED
 - SRFI-72: platform
 - SRFI-73: withdrawn
-- SRFI-74: UNTESTED
+- SRFI-74: r6rs
 - SRFI-75: withdrawn
 - SRFI-76: withdrawn
 - SRFI-77: withdrawn
