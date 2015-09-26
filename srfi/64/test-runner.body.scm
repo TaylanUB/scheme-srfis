@@ -67,6 +67,9 @@
   (on-bad-count test-runner-on-bad-count test-runner-on-bad-count!)
   (on-bad-end-name test-runner-on-bad-end-name test-runner-on-bad-end-name!)
 
+  (on-bad-error-type %test-runner-on-bad-error-type
+                     %test-runner-on-bad-error-type!)
+
   (aux-value test-runner-aux-value test-runner-aux-value!)
 
   (log-file test-runner-log-file test-runner-log-file!)
@@ -102,6 +105,7 @@
     (test-runner-on-test-end! runner test-null-callback)
     (test-runner-on-bad-count! runner test-null-callback)
     (test-runner-on-bad-end-name! runner test-null-callback)
+    (%test-runner-on-bad-error-type! runner test-null-callback)
     (test-runner-log-file! runner #f)
     (test-runner-log-port! runner #f)
     runner))

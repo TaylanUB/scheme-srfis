@@ -62,13 +62,14 @@
 (define (test-runner-simple)
   (let ((runner (test-runner-null)))
     (test-runner-reset runner)
-    (test-runner-on-group-begin! runner test-on-group-begin-simple)
-    (test-runner-on-group-end! runner test-on-group-end-simple)
-    (test-runner-on-final! runner test-on-final-simple)
-    (test-runner-on-test-begin! runner test-on-test-begin-simple)
-    (test-runner-on-test-end! runner test-on-test-end-simple)
-    (test-runner-on-bad-count! runner test-on-bad-count-simple)
-    (test-runner-on-bad-end-name! runner test-on-bad-end-name-simple)
+    (test-runner-on-group-begin!     runner test-on-group-begin-simple)
+    (test-runner-on-group-end!       runner test-on-group-end-simple)
+    (test-runner-on-final!           runner test-on-final-simple)
+    (test-runner-on-test-begin!      runner test-on-test-begin-simple)
+    (test-runner-on-test-end!        runner test-on-test-end-simple)
+    (test-runner-on-bad-count!       runner test-on-bad-count-simple)
+    (test-runner-on-bad-end-name!    runner test-on-bad-end-name-simple)
+    (%test-runner-on-bad-error-type! runner on-bad-error-type)
     runner))
 
 (when (not (test-runner-factory))
@@ -159,5 +160,9 @@
 (define (test-on-bad-end-name-simple runner begin-name end-name)
   (error (format #f "Test-end \"~a\" does not match test-begin \"~a\"."
                  end-name begin-name)))
+
+(define (on-bad-error-type runner type error)
+  (print runner "WARNING: unknown error type predicate: ~a~%" type)
+  (print runner "         error was: ~a~%" error))
 
 ;;; test-runner-simple.scm ends here

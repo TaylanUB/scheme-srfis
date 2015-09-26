@@ -316,8 +316,8 @@
    ((procedure? type)
     (type error))
    (else
-    (format #t "WARNING: unknown error type predicate: ~a~%" type)
-    (format #t "         error was: ~a~%" error)
+    (let ((runner (test-runner-get)))
+      ((%test-runner-on-bad-error-type runner) runner type error))
     #f)))
 
 (define-syntax test-error

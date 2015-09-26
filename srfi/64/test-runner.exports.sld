@@ -32,6 +32,8 @@
  test-runner-on-bad-count test-runner-on-bad-count!
  test-runner-on-bad-end-name test-runner-on-bad-end-name!
 
+ %test-runner-on-bad-error-type %test-runner-on-bad-error-type!
+
  test-runner-aux-value test-runner-aux-value!
 
  test-runner-log-file test-runner-log-file!
