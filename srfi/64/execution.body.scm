@@ -35,7 +35,7 @@
 (define (maybe-install-default-runner suite-name)
   (when (not (test-runner-current))
     (let ((runner (test-runner-simple))
-          (log-file (string-append suite-name ".log")))
+          (log-file (string-append suite-name ".srfi64.log")))
       (%test-runner-log-file! runner log-file)
       (test-runner-current runner))))
 
