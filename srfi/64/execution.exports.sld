@@ -1,9 +1,5 @@
-(cond-expand
- (kawa (export (rename test-begin %test-begin)))
- (else (export test-begin)))
 (export
- test-end
- test-group test-group-with-cleanup
+ test-begin test-end test-group test-group-with-cleanup
 
  test-skip test-expect-fail
  test-match-name test-match-nth
