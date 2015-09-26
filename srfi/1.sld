@@ -37,6 +37,4 @@
    (scheme cxr)
    (srfi 8)
    (srfi aux))
-  (begin
-    (define-aux-forms check-arg let-optionals* :optional))
   (include "1.body.scm"))

@@ -1,18 +1,17 @@
 (define-library (srfi aux)
-  (export
-   debug-mode
-   define-aux-forms
-   char-cased?-proc
-   char-titlecase-proc
-   define/opt
-   lambda/opt
-   )
   (import
    (scheme base)
    (scheme case-lambda)
-   (scheme char)
    (srfi 31))
+  (export
+   debug-mode
+   define/opt
+   lambda/opt
+   check-arg
+   )
   (begin
+
+    (define debug-mode (make-parameter #f))
 
     ;; Emacs indentation help:
     ;; (put 'define/opt 'scheme-indent-function 1)
@@ -76,75 +75,16 @@
            ((taken ... opt . rest)
             . body)))))
 
-    (define debug-mode (make-parameter #f))
-
-    (define-syntax define-aux-forms
-      (syntax-rules :::
-        ()
-        ((_ check-arg let-optionals* :optional)
-         (begin
-
-           (define check-arg
-             (if (debug-mode)
-                 (lambda (pred val proc)
-                   (if (pred val)
-                       val
-                       (error "Type assertion failed:"
-                              `(value ,val)
-                              `(expected-type ,pred)
-                              `(callee ,proc))))
-                 (lambda (pred val proc)
-                   val)))
-
-           (define check-optional
-             (if (debug-mode)
-                 (lambda (pred form)
-                   (unless (pred)
-                     (error "Optional argument guard failed:" form)))
-                 (lambda (pred form)
-                   #f)))
-
-           (define-syntax let-optionals*
-             (syntax-rules ()
-               ((_ args () body ...)
-                (begin body ...))
-               ((_ args ((var default) rest ...) body ...)
-                (let-optionals* args ((var default #t) rest ...) body ...))
-               ((_ args (((var ...) default-producer guard) rest ...) body ...)
-                (let-values (((a) args)
-                             ((var ...) (default-producer)))
-                  (check-optional (lambda () guard) 'guard)
-                  (let-optionals*
-                   (if (null? a) a (cdr a)) (rest ...) body ...)))
-               ((_ args ((var default guard) rest ...) body ...)
-                (let* ((a args)
-                       (var (if (null? a) default (car a))))
-                  (check-optional (lambda () guard) 'guard)
-                  (let-optionals*
-                   (if (null? a) a (cdr a)) (rest ...) body ...)))
-               ((_ args (restarg) body ...)
-                (let ((restarg args))
-                  body ...))))
-
-           (define-syntax :optional
-             (syntax-rules ()
-               ((_ args default)
-                (:optional args default #t))
-               ((_ args default guard)
-                (let ((a args))
-                  (if (pair? a)
-                      (let ((val (car a)))
-                        (check-optional (lambda () guard) 'guard)
-                        val)
-                      default)))))
-
-           ))))
-
-    (define char-cased?-proc
-      (make-parameter
-       (lambda (c)
-         (not (eqv? (char-upcase c) (char-downcase c))))))
-
-    (define char-titlecase-proc (make-parameter char-upcase))
+    (define check-arg
+      (if (debug-mode)
+          (lambda (pred val proc)
+            (if (pred val)
+                val
+                (error "Type assertion failed:"
+                       `(value ,val)
+                       `(expected-type ,pred)
+                       `(callee ,proc))))
+          (lambda (pred val proc)
+            val)))
 
     ))
