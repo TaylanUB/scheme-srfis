@@ -93,33 +93,19 @@ Chibi Scheme is a clean, small, portable, and pretty much fully R7RS
 compliant Scheme platform, so it's a good choice for testing R7RS
 libraries.
 
-Version 0.7 has some bugs and limitations; compiling from the upstream
-repository is recommended at least until there is a newer release.
-One can run Chibi from its source directory after compilation, but it
-requires exporting `LD_LIBRARY_PATH=$chibi_dir`, and unless the
-executable `chibi-scheme` is run from `$chibi_dir`, one must add
-`$chibi_dir/lib` explicitly to the load path via the `-I` (capital
-'i') or `-A` switches.
+- Clone Chibi from its git repository and build it by running `make`.
+- Create the directory `lib/needed-for-init` in the source tree.
+- Copy the directory `lib/srfi` to `lib/needed-for-init/srfi`.
+- Remove all files and directories except `69` and `69.sld` under
+  `lib/needed-for-init/srfi`.
+- Run Chibi as follows:
 
-Prepending the path to this repository to the load-path of Chibi via
-the `-I` (capital 'i') flag will make the implementations here
-override any native SRFI implementations of Chibi.  However, that may
-break Chibi's initialization process.
-
-Instead the `-A` switch may be used to append to the load-path, in
-which case Chibi's SRFI implementations will take priority.  That can
-be worked around by visiting the directory `$chibi_dir/lib/srfi` and
-moving away the following files: `1.sld`, `2.sld`, `26.sld`, `27.sld`,
-`8.sld`, `95.sld`, `99.sld`.  (This list may grow as Chibi adds more
-SRFIs which clash with those in this repository.)
-
-Most other SRFIs in the directory are ones that aren't in the scope of
-this repository.  (Specifically, many implement R7RS features, so
-don't remove them!)  The only remaining clash is `33.sld`, which seems
-to be needed for Chibi's initialization, so be careful to import the
-correct `(srfi 33)` when testing with Chibi, for example by renaming
-the `srfi/33.sld` in this repository, as well as the library declared
-in it, to some name that won't clash.
+    LD_LIBRARY_PATH=$chibi_repo \
+    CHIBI_MODULE_PATH=$chibi_repo/lib \
+    $chibi_repo/chibi-scheme \
+      -I $srfi_repo \
+      -I $chibi_repo/lib/needed-for-init \
+      remaining arguments ...
 
 Snow
 ----
