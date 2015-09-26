@@ -54,20 +54,16 @@
 (define (nonnegative? x)
   (not (negative? x)))
 
-(define iota
-  (case-lambda
-    ((count) (iota count 0 1))
-    ((count start) (iota count start 1))
-    ((count start step)
-     (check-arg integer? count iota)
-     (check-arg nonnegative? count iota)
-     (check-arg number? start iota)
-     (check-arg number? step iota)
-     (let loop ((n 0) (r '()))
-       (if (= n count)
-           (reverse r)
-           (loop (+ 1 n)
-                 (cons (+ start (* n step)) r)))))))
+(define/opt (iota count (start 0) (step 1))
+  (check-arg integer? count iota)
+  (check-arg nonnegative? count iota)
+  (check-arg number? start iota)
+  (check-arg number? step iota)
+  (let loop ((n 0) (r '()))
+    (if (= n count)
+        (reverse r)
+        (loop (+ 1 n)
+              (cons (+ start (* n step)) r)))))
 
 ;;; I thought these were lovely, but the public at large did not share my
 ;;; enthusiasm...
@@ -588,31 +584,25 @@
 ;;; fold/unfold
 ;;;;;;;;;;;;;;;
 
-(define unfold-right
-  (case-lambda
-    ((p f g seed) (unfold-right p f g seed '()))
-    ((p f g seed tail)
-     (check-arg procedure? p unfold-right)
-     (check-arg procedure? f unfold-right)
-     (check-arg procedure? g unfold-right)
-     (let lp ((seed seed) (ans tail))
-       (if (p seed) ans
-           (lp (g seed)
-               (cons (f seed) ans)))))))
+(define/opt (unfold-right p f g seed (tail '()))
+  (check-arg procedure? p unfold-right)
+  (check-arg procedure? f unfold-right)
+  (check-arg procedure? g unfold-right)
+  (let lp ((seed seed) (ans tail))
+    (if (p seed) ans
+        (lp (g seed)
+            (cons (f seed) ans)))))
 
 
-(define unfold
-  (case-lambda
-    ((p f g seed) (unfold p f g seed #f))
-    ((p f g seed tail-gen)
-     (check-arg procedure? p unfold)
-     (check-arg procedure? f unfold)
-     (check-arg procedure? g unfold)
-     (check-arg procedure? tail-gen unfold)
-     (let recur ((seed seed))
-       (if (p seed)
-           (if tail-gen (tail-gen seed) '())
-           (cons (f seed) (recur (g seed))))))))
+(define/opt (unfold p f g seed (tail-gen #f))
+  (check-arg procedure? p unfold)
+  (check-arg procedure? f unfold)
+  (check-arg procedure? g unfold)
+  (check-arg procedure? tail-gen unfold)
+  (let recur ((seed seed))
+    (if (p seed)
+        (if tail-gen (tail-gen seed) '())
+        (cons (f seed) (recur (g seed))))))
       
 
 (define (fold kons knil lis1 . lists)
@@ -987,21 +977,15 @@
 ;;; assoc key lis [=]		Search alist by key comparison
 ;;; alist-delete key alist [=]	Alist-delete by key comparison
 
-(define delete
-  (case-lambda
-    ((x lis) (delete x lis equal?))
-    ((x lis =) (filter (lambda (y) (not (= x y))) lis))))
+(define/opt (delete x lis (= equal?))
+  (filter (lambda (y) (not (= x y))) lis))
 
-(define delete!
-  (case-lambda
-    ((x lis) (delete! x lis equal?))
-    ((x lis =) (filter! (lambda (y) (not (= x y))) lis))))
+(define/opt (delete! x lis (= equal?))
+  (filter! (lambda (y) (not (= x y))) lis))
 
 ;;; Extended from R4RS to take an optional comparison argument.
-(define member
-  (case-lambda
-    ((x lis) (member x lis equal?))
-    ((x lis =) (find-tail (lambda (y) (= x y)) lis))))
+(define/opt (member x lis (= equal?))
+  (find-tail (lambda (y) (= x y)) lis))
 
 ;;; R4RS, hence we don't bother to define.
 ;;; The MEMBER and then FIND-TAIL call should definitely
@@ -1019,39 +1003,31 @@
 ;;; linear-time algorithm to kill the dups. Or use an algorithm based on
 ;;; element-marking. The former gives you O(n lg n), the latter is linear.
 
-(define delete-duplicates
-  (case-lambda
-    ((lis) (delete-duplicates lis equal?))
-    ((lis elt=)
-     (check-arg procedure? elt= delete-duplicates)
-     (let recur ((lis lis))
-       (if (null-list? lis) lis
-           (let* ((x (car lis))
-                  (tail (cdr lis))
-                  (new-tail (recur (delete x tail elt=))))
-             (if (eq? tail new-tail) lis (cons x new-tail))))))))
+(define/opt (delete-duplicates lis (elt= equal?))
+  (check-arg procedure? elt= delete-duplicates)
+  (let recur ((lis lis))
+    (if (null-list? lis) lis
+        (let* ((x (car lis))
+               (tail (cdr lis))
+               (new-tail (recur (delete x tail elt=))))
+          (if (eq? tail new-tail) lis (cons x new-tail))))))
 
-(define delete-duplicates!
-  (case-lambda
-    ((lis) (delete-duplicates! lis equal?))
-    ((lis elt=)
-     (check-arg procedure? elt= delete-duplicates!)
-     (let recur ((lis lis))
-       (if (null-list? lis) lis
-           (let* ((x (car lis))
-                  (tail (cdr lis))
-                  (new-tail (recur (delete! x tail elt=))))
-             (if (eq? tail new-tail) lis (cons x new-tail))))))))
+(define/opt (delete-duplicates! lis (elt= equal?))
+  (check-arg procedure? elt= delete-duplicates!)
+  (let recur ((lis lis))
+    (if (null-list? lis) lis
+        (let* ((x (car lis))
+               (tail (cdr lis))
+               (new-tail (recur (delete! x tail elt=))))
+          (if (eq? tail new-tail) lis (cons x new-tail))))))
 
 
 ;;; alist stuff
 ;;;;;;;;;;;;;;;
 
 ;;; Extended from R4RS to take an optional comparison argument.
-(define assoc
-  (case-lambda
-    ((x lis) (assoc x lis equal?))
-    ((x lis =) (find (lambda (entry) (= x (car entry))) lis))))
+(define/opt (assoc x lis (= equal?))
+  (find (lambda (entry) (= x (car entry))) lis))
 
 (define (alist-cons key datum alist) (cons (cons key datum) alist))
 
@@ -1059,15 +1035,11 @@
   (map (lambda (elt) (cons (car elt) (cdr elt)))
        alist))
 
-(define alist-delete
-  (case-lambda
-    ((key alist) (alist-delete key alist equal?))
-    ((key alist =) (filter (lambda (elt) (not (= key (car elt)))) alist))))
+(define/opt (alist-delete key alist (= equal?))
+  (filter (lambda (elt) (not (= key (car elt)))) alist))
 
-(define alist-delete!
-  (case-lambda
-    ((key alist) (alist-delete! key alist equal?))
-    ((key alist =) (filter! (lambda (elt) (not (= key (car elt)))) alist))))
+(define/opt (alist-delete! key alist (= equal?))
+  (filter! (lambda (elt) (not (= key (car elt)))) alist))
 
 
 ;;; find find-tail take-while drop-while span break any every list-index
