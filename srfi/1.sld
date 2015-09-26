@@ -32,7 +32,7 @@
    lset-union! lset-intersection! lset-difference! lset-xor! lset-diff+intersection!
    )
   (import
-   (scheme base)
+   (except (scheme base) map member assoc)
    (scheme case-lambda)
    (scheme cxr)
    (srfi 8)
