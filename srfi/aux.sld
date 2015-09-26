@@ -7,7 +7,7 @@
    debug-mode
    define/opt
    lambda/opt
-   check-arg
+   define-check-arg
    )
   (begin
 
@@ -75,16 +75,19 @@
            ((taken ... opt . rest)
             . body)))))
 
-    (define check-arg
-      (if (debug-mode)
-          (lambda (pred val proc)
-            (if (pred val)
-                val
-                (error "Type assertion failed:"
-                       `(value ,val)
-                       `(expected-type ,pred)
-                       `(callee ,proc))))
-          (lambda (pred val proc)
-            val)))
+    (define-syntax define-check-arg
+      (syntax-rules ()
+        ((_ check-arg)
+         (define check-arg
+           (if (debug-mode)
+               (lambda (pred val proc)
+                 (if (pred val)
+                     val
+                     (error "Type assertion failed:"
+                            `(value ,val)
+                            `(expected-type ,pred)
+                            `(callee ,proc))))
+               (lambda (pred val proc)
+                 val))))))
 
     ))
