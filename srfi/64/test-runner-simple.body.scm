@@ -145,10 +145,10 @@
           (when line
             (print runner "Source:\n~a:~a\n~%" (or file "(unknown file)") line))
           (print runner "Expression:\n~a\n~%" expression)
-          (maybe-print expected-value "Expected value:\n~a\n~%")
+          (maybe-print expected-value "Expected value:\n~w\n~%")
           (maybe-print expected-error "Expected error:\n~a\n~%")
           (when (or (found? expected-value) (found? expected-error))
-            (maybe-print actual-value "Got value:\n~a\n~%"))
+            (maybe-print actual-value "Got value:\n~w\n~%"))
           (maybe-print actual-error "Got error:\n~a\n~%"))))))
 
 (define (test-on-bad-count-simple runner count expected-count)
