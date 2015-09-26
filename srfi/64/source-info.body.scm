@@ -20,18 +20,25 @@
 ;; CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 ;; SOFTWARE.
 
-(define-syntax source-info
+(define (canonical-syntax form arg)
   (cond-expand
-   ((or kawa guile-2)
+   (kawa arg)
+   (guile form)
+   (else #f)))
+
+(cond-expand
+ ((or kawa guile-2)
+  (define-syntax source-info
     (lambda (stx)
       (syntax-case stx ()
         ((_ <x>)
-         (let* ((stx (cond-expand (kawa (syntax <x>)) (guile stx) (else)))
+         (let* ((stx (canonical-syntax stx (syntax <x>)))
                 (file (syntax-source-file stx))
                 (line (syntax-source-line stx)))
            (quasisyntax
-            (cons (unsyntax file) (unsyntax line))))))))
-   (else
+            (cons (unsyntax file) (unsyntax line)))))))))
+ (else
+  (define-syntax source-info
     (syntax-rules ()
       ((_ <x>)
        #f)))))

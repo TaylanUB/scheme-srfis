@@ -343,12 +343,15 @@
         (set-result-kind! runner pass?)))
     (test-postlude runner)))
 
+(define (default-module)
+  (cond-expand
+   (guile (current-module))
+   (else #f)))
+
 (define test-read-eval-string
   (case-lambda
     ((string)
-     (test-read-eval-string string (cond-expand
-                                    (guile (current-module))
-                                    (else #f))))
+     (test-read-eval-string string (default-module)))
     ((string env)
      (let* ((port (open-input-string string))
             (form (read port)))
