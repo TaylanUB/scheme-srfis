@@ -36,7 +36,7 @@
   (when (not (test-runner-current))
     (let ((runner (test-runner-simple))
           (log-file (string-append suite-name ".log")))
-      (test-runner-log-file! runner log-file)
+      (%test-runner-log-file! runner log-file)
       (test-runner-current runner))))
 
 (define test-begin

@@ -53,7 +53,7 @@
 
 (define (print runner format-string . args)
   (apply format #t format-string args)
-  (let ((port (test-runner-log-port runner)))
+  (let ((port (%test-runner-log-port runner)))
     (when port
       (apply format port format-string args))))
 
@@ -97,16 +97,16 @@
   (maybe-finish-logging runner))
 
 (define (maybe-start-logging runner)
-  (let ((log-file (test-runner-log-file runner)))
+  (let ((log-file (%test-runner-log-file runner)))
     (when log-file
-      (test-runner-log-port! runner (open-output-file log-file))
+      (%test-runner-log-port! runner (open-output-file log-file))
       (print runner "Writing log file: ~a~%" log-file))))
 
 (define (maybe-finish-logging runner)
-  (let ((log-file (test-runner-log-file runner)))
+  (let ((log-file (%test-runner-log-file runner)))
     (when log-file
       (print runner "Wrote log file: ~a~%" log-file)
-      (close-output-port (test-runner-log-port runner)))))
+      (close-output-port (%test-runner-log-port runner)))))
 
 (define (test-on-test-begin-simple runner)
   (values))

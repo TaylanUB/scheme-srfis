@@ -72,8 +72,8 @@
 
   (aux-value test-runner-aux-value test-runner-aux-value!)
 
-  (log-file test-runner-log-file test-runner-log-file!)
-  (log-port test-runner-log-port test-runner-log-port!))
+  (log-file %test-runner-log-file %test-runner-log-file!)
+  (log-port %test-runner-log-port %test-runner-log-port!))
 
 (define (test-runner-group-path runner)
   (reverse (test-runner-group-stack runner)))
@@ -106,8 +106,8 @@
     (test-runner-on-bad-count! runner test-null-callback)
     (test-runner-on-bad-end-name! runner test-null-callback)
     (%test-runner-on-bad-error-type! runner test-null-callback)
-    (test-runner-log-file! runner #f)
-    (test-runner-log-port! runner #f)
+    (%test-runner-log-file! runner #f)
+    (%test-runner-log-port! runner #f)
     runner))
 
 

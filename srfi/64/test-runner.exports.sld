@@ -36,8 +36,8 @@
 
  test-runner-aux-value test-runner-aux-value!
 
- test-runner-log-file test-runner-log-file!
- test-runner-log-port test-runner-log-port!
+ %test-runner-log-file %test-runner-log-file!
+ %test-runner-log-port %test-runner-log-port!
 
  ;; State
  test-result-ref test-result-set!
