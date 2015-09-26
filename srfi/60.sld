@@ -36,7 +36,6 @@
    
    ;; Bits as Booleans
    integer->list
-   integer->list
    list->integer
    booleans->integer
    )
