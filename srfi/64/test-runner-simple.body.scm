@@ -99,6 +99,9 @@
 (define (maybe-start-logging runner)
   (let ((log-file (%test-runner-log-file runner)))
     (when log-file
+      ;; The possible race-condition here doesn't bother us.
+      (when (file-exists? log-file)
+        (delete-file log-file))
       (%test-runner-log-port! runner (open-output-file log-file))
       (print runner "Writing log file: ~a~%" log-file))))
 
