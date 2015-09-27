@@ -105,28 +105,6 @@ libraries.
       -I $chibi_repo/lib/needed-for-init \
       remaining arguments ...
 
-Snow
-----
-
-The SRFI libraries are offered through Snow packages as well:
-
-<http://taylanub-r7rs-srfis.s3-website-us-east-1.amazonaws.com/>
-
-(Thanks to Seth Alves for the hosting and help in making Snow packages
-for the libraries.)
-
-To install an SRFI, you can install
-[snow2](https://github.com/sethalves/snow2-client) and run:
-
-    snow2 -r http://taylanub-r7rs-srfis.s3-website-us-east-1.amazonaws.com/index.scm install '(srfi n)'
-
-for any SRFI-`n`.
-
-The repository is turned into a Snow repository by running `snow2
-package` in the top-level directory.
-
-Test suites are also available as `(srfi-tests n)` for any SRFI-`n`.
-
 Concrete conventions
 --------------------
 
