@@ -41,10 +41,8 @@ show.  Therefore:
   withdrawn for good reasons, but if there's any which you find useful
   then feel free to make a request or (better) contribute it.
 
-- Don't use the pure GPL for your libraries; people will be likely to
-  just reimplement them with a different license if they don't like
-  the GPL.  I like copyleft, so would use the LGPL, but do as you
-  wish.
+- Please use the standard SRFI license, found at the bottom of most
+  SRFI pages.
 
 Platform expectations
 ---------------------
