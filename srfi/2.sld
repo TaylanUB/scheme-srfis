@@ -25,23 +25,39 @@
   (begin
     (define-syntax and-let*
       (syntax-rules ()
-        ((and-let* ((var expr) rest rest* ...) body ...)
+
+        ;; Handle zero-clauses special-case.
+        ((_ () . body)
+         (begin #t . body))
+
+        ;; Reduce clauses down to one regardless of body.
+        ((_ ((var expr) rest . rest*) . body)
          (let ((var expr))
-           (and var (and-let* (rest rest* ...) body ...))))
-        ((and-let* ((expr) rest rest* ...) body ...)
-         (and expr (and-let* (rest rest* ...) body ...)))
-        ((and-let* (bound-var rest rest* ...) body ...)
+           (and var (and-let* (rest . rest*) . body))))
+        ((_ ((expr) rest . rest*) . body)
+         (and expr (and-let* (rest . rest*) . body)))
+        ((_ (var rest . rest*) . body)
          (begin
-           (let ((bound-var #f)) #f)    ;(identifier? bound-var)
-           (and bound-var (and-let* (rest rest* ...) body ...))))
-        ((and-let* ((var expr)) body ...)
+           (let ((var #f)) #f)          ;(identifier? var)
+           (and var (and-let* (rest . rest*) . body))))
+
+        ;; Handle 1-clause cases without a body.
+        ((_ ((var expr)))
+         expr)
+        ((_ ((expr)))
+         expr)
+        ((_ (var))
+         (begin
+           (let ((var #f)) #f)          ;(identifier? var)
+           var))
+
+        ;; Handle 1-clause cases with a body.
+        ((_ ((var expr)) . body)
          (let ((var expr))
-           (and var body ...)))
-        ((and-let* ((expr)) body ...)
-         (and expr body ...))
-        ((and-let* (bound-var) body ...)
+           (and var (begin . body))))
+        ((_ ((expr)) . body)
+         (and expr (begin . body)))
+        ((_ (var) . body)
          (begin
-           (let ((bound-var #f)) #f)    ;(identifier? bound-var)
-           (and bound-var body ...)))
-        ((and-let* () body ...)
-         (and body ...))))))
+           (let ((var #f)) #f)          ;(identifier? var)
+           (and var (begin . body))))))))
