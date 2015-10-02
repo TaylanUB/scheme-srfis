@@ -20,10 +20,27 @@
 ;; CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 ;; SOFTWARE.
 
+;;; In some systems, a macro use like (source-info ...), that resides in a
+;;; syntax-rules macro body, first gets inserted into the place where the
+;;; syntax-rules macro was used, and then the transformer of 'source-info' is
+;;; called with a syntax object that has the source location information of that
+;;; position.  That works fine when the user calls e.g. (test-assert ...), whose
+;;; body contains (source-info ...); the user gets the source location of the
+;;; (test-assert ...) call as intended, and not the source location of the real
+;;; (source-info ...) call.
+
+;;; In other systems, *first* the (source-info ...) is processed to get its real
+;;; position, which is within the body of a syntax-rules macro like test-assert,
+;;; so no matter where the user calls (test-assert ...), they get source
+;;; location information of where we defined test-assert with the call to
+;;; (source-info ...) in its body.  That's arguably more correct behavior,
+;;; although in this case it makes our job a bit harder; we need to get the
+;;; source location from an argument to 'source-info' instead.
+
 (define (canonical-syntax form arg)
   (cond-expand
    (kawa arg)
-   (guile form)
+   (guile-2 form)
    (else #f)))
 
 (cond-expand

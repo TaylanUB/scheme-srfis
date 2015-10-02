@@ -239,12 +239,21 @@
                         (if pass? 'xpass 'xfail)
                         (if pass? 'pass 'fail))))
 
+;;; We need to use some trickery to get the source info right.  The important
+;;; thing is to pass a syntax object that is a pair to `source-info', and make
+;;; sure this syntax object comes from user code and not from ourselves.
+
 (define-syntax test-assert
   (syntax-rules ()
-    ((_ <expr>)
-     (test-assert #f <expr>))
-    ((_ <name> <expr>)
-     (%test-assert (source-info <expr>) <name> '<expr> (lambda () <expr>)))))
+    ((_ . <rest>)
+     (test-assert/source-info (source-info <rest>) . <rest>))))
+
+(define-syntax test-assert/source-info
+  (syntax-rules ()
+    ((_ <source-info> <expr>)
+     (test-assert/source-info <source-info> #f <expr>))
+    ((_ <source-info> <name> <expr>)
+     (%test-assert <source-info> <name> '<expr> (lambda () <expr>)))))
 
 (define (%test-assert source-info name form thunk)
   (let ((runner (test-runner-get)))
@@ -256,10 +265,15 @@
 
 (define-syntax test-compare
   (syntax-rules ()
-    ((_ <compare> <expected> <expr>)
-     (test-compare <compare> #f <expected> <expr>))
-    ((_ <compare> <name> <expected> <expr>)
-     (%test-compare (source-info <expr>) <compare> <name> <expected> '<expr>
+    ((_ . <rest>)
+     (test-compare/source-info (source-info <rest>) . <rest>))))
+
+(define-syntax test-compare/source-info
+  (syntax-rules ()
+    ((_ <source-info> <compare> <expected> <expr>)
+     (test-compare/source-info <source-info> <compare> #f <expected> <expr>))
+    ((_ <source-info> <compare> <name> <expected> <expr>)
+     (%test-compare <source-info> <compare> <name> <expected> '<expr>
                     (lambda () <expr>)))))
 
 (define (%test-compare source-info compare name expected form thunk)
@@ -277,17 +291,17 @@
 (define-syntax test-equal
   (syntax-rules ()
     ((_ . <rest>)
-     (test-compare equal? . <rest>))))
+     (test-compare/source-info (source-info <rest>) equal? . <rest>))))
 
 (define-syntax test-eqv
   (syntax-rules ()
     ((_ . <rest>)
-     (test-compare eqv? . <rest>))))
+     (test-compare/source-info (source-info <rest>) eqv? . <rest>))))
 
 (define-syntax test-eq
   (syntax-rules ()
     ((_ . <rest>)
-     (test-compare eq? . <rest>))))
+     (test-compare/source-info (source-info <rest>) eq? . <rest>))))
 
 (define (approx= margin)
   (lambda (value expected)
@@ -302,10 +316,17 @@
 
 (define-syntax test-approximate
   (syntax-rules ()
-    ((_ <expected> <expr> <error-margin>)
-     (test-approximate #f <expected> <expr> <error-margin>))
-    ((_ <name> <expected> <expr> <error-margin>)
-     (test-compare (approx= <error-margin>) <name> <expected> <expr>))))
+    ((_ . <rest>)
+     (test-approximate/source-info (source-info <rest>) . <rest>))))
+
+(define-syntax test-approximate/source-info
+  (syntax-rules ()
+    ((_ <source-info> <expected> <expr> <error-margin>)
+     (test-approximate/source-info
+      <source-info> #f <expected> <expr> <error-margin>))
+    ((_ <source-info> <name> <expected> <expr> <error-margin>)
+     (test-compare/source-info
+      <source-info> (approx= <error-margin>) <name> <expected> <expr>))))
 
 (define (error-matches? error type)
   (cond
@@ -322,12 +343,17 @@
 
 (define-syntax test-error
   (syntax-rules ()
-    ((_ <expr>)
-     (test-error #f #t <expr>))
-    ((_ <error-type> <expr>)
-     (test-error #f <error-type> <expr>))
-    ((_ <name> <error-type> <expr>)
-     (%test-error (source-info <expr>) <name> <error-type> '<expr>
+    ((_ . <rest>)
+     (test-error/source-info (source-info <rest>) . <rest>))))
+
+(define-syntax test-error/source-info
+  (syntax-rules ()
+    ((_ <source-info> <expr>)
+     (test-error/source-info <source-info> #f #t <expr>))
+    ((_ <source-info> <error-type> <expr>)
+     (test-error/source-info <source-info> #f <error-type> <expr>))
+    ((_ <source-info> <name> <error-type> <expr>)
+     (%test-error <source-info> <name> <error-type> '<expr>
                   (lambda () <expr>)))))
 
 (define (%test-error source-info name error-type form thunk)
