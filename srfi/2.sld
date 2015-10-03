@@ -19,6 +19,10 @@
 ;; OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 ;; WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
+;;; The SRFI claims that having the same variable appear multiple times is an
+;;; error in let* and so also in and-let*.  In fact let* allows rebinding the
+;;; same variable, so we also allow it here.
+
 (define-library (srfi 2)
   (export and-let*)
   (import (scheme base))
