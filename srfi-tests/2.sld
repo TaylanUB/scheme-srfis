@@ -49,10 +49,15 @@
       (test-equal 1 (let ((x 1)) (and-let* (x))))
       (test-equal #f (and-let* ((x #f))))
       (test-equal 1 (and-let* ((x 1))))
-      (test-syntax-error (and-let* (#f (x 1))))
       (test-equal #f (and-let* ((#f) (x 1))))
-      (test-syntax-error (and-let* (2 (x 1))))
       (test-equal 1 (and-let* ((2) (x 1))))
+      ;; Gauche allows let-binding a constant, thus fails to signal an error on
+      ;; the following two tests.
+      (cond-expand
+       (gauche (test-expect-fail 2))
+       (else))
+      (test-syntax-error (and-let* (#f (x 1))))
+      (test-syntax-error (and-let* (2 (x 1))))
       (test-equal 2 (and-let* ((x 1) (2))))
       (test-equal #f (let ((x #f)) (and-let* (x) x)))
       (test-equal "" (let ((x "")) (and-let* (x) x)))
