@@ -11,7 +11,6 @@
    random-source-pseudo-randomize!
    random-source-make-integers
    random-source-make-reals
-   random-source-make-reals
    )
   (import
    (scheme base)
