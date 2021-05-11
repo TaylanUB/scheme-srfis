@@ -34,8 +34,14 @@
 
 (define (maybe-install-default-runner suite-name)
   (when (not (test-runner-current))
-    (let ((log-file (string-append suite-name ".srfi64.log")))
-      (test-runner-current (test-runner-simple log-file)))))
+    (let* ((log-file (string-append suite-name ".srfi64.log"))
+           (runner (test-runner-simple log-file)))
+      (%test-runner-auto-installed! runner #t)
+      (test-runner-current runner))))
+
+(define (maybe-uninstall-default-runner)
+  (when (%test-runner-auto-installed? (test-runner-current))
+    (test-runner-current #f)))
 
 (define test-begin
   (case-lambda
@@ -85,7 +91,8 @@
          (%test-runner-fail-save! r (cdr (%test-runner-fail-save r)))
          (%test-runner-count-list! r (cdr count-list))
          (when (null? (test-runner-group-stack r))
-           ((test-runner-on-final r) r)))))))
+           ((test-runner-on-final r) r)
+           (maybe-uninstall-default-runner)))))))
 
 (define-syntax test-group
   (syntax-rules ()

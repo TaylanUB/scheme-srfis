@@ -72,6 +72,8 @@
 
   (aux-value test-runner-aux-value test-runner-aux-value!)
 
+  (auto-installed %test-runner-auto-installed? %test-runner-auto-installed!)
+
   (log-file %test-runner-log-file %test-runner-log-file!)
   (log-port %test-runner-log-port %test-runner-log-port!))
 
@@ -106,6 +108,7 @@
     (test-runner-on-bad-count! runner test-null-callback)
     (test-runner-on-bad-end-name! runner test-null-callback)
     (%test-runner-on-bad-error-type! runner test-null-callback)
+    (%test-runner-auto-installed! runner #f)
     (%test-runner-log-file! runner #f)
     (%test-runner-log-port! runner #f)
     runner))
