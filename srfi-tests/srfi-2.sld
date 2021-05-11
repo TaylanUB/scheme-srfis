@@ -20,7 +20,7 @@
 ;; OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 ;; SOFTWARE.
 
-(define-library (srfi-tests 2)
+(define-library (srfi-tests srfi-2)
   (export run-tests)
   (import
    (scheme base)

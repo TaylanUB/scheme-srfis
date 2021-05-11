@@ -9,10 +9,13 @@
 
 (for-each
  (lambda (n)
-   (when (file-exists? (format #f "srfi-tests/~s.sld" n))
-     (test-assert (string-append "SRFI-" (number->string n))
-       (guard (err (else #f))
-         (eval '(run-tests) (environment `(srfi-tests ,n)))))))
+   (let ((srfi-n (string->symbol (format #f "srfi-~s" n)))
+         (file-name (format #f "srfi-tests/srfi-~s.sld" n))
+         (test-name (format #f "SRFI-~s" n)))
+    (when (file-exists? file-name)
+      (test-assert test-name
+        (guard (err (else #f))
+          (eval '(run-tests) (environment `(srfi-tests ,srfi-n))))))))
  (iota 200))
 
 (test-end "SRFI")
