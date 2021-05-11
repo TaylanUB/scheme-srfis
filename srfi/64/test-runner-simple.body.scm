@@ -61,18 +61,23 @@
 
 ;;; Main
 
-(define (test-runner-simple)
-  (let ((runner (test-runner-null)))
-    (test-runner-reset runner)
-    (test-runner-on-group-begin!     runner test-on-group-begin-simple)
-    (test-runner-on-group-end!       runner test-on-group-end-simple)
-    (test-runner-on-final!           runner test-on-final-simple)
-    (test-runner-on-test-begin!      runner test-on-test-begin-simple)
-    (test-runner-on-test-end!        runner test-on-test-end-simple)
-    (test-runner-on-bad-count!       runner test-on-bad-count-simple)
-    (test-runner-on-bad-end-name!    runner test-on-bad-end-name-simple)
-    (%test-runner-on-bad-error-type! runner on-bad-error-type)
-    runner))
+(define test-runner-simple
+  (case-lambda
+   (()
+    (test-runner-simple #f))
+   ((log-file)
+    (let ((runner (test-runner-null)))
+      (test-runner-reset runner)
+      (test-runner-on-group-begin!     runner test-on-group-begin-simple)
+      (test-runner-on-group-end!       runner test-on-group-end-simple)
+      (test-runner-on-final!           runner test-on-final-simple)
+      (test-runner-on-test-begin!      runner test-on-test-begin-simple)
+      (test-runner-on-test-end!        runner test-on-test-end-simple)
+      (test-runner-on-bad-count!       runner test-on-bad-count-simple)
+      (test-runner-on-bad-end-name!    runner test-on-bad-end-name-simple)
+      (%test-runner-on-bad-error-type! runner on-bad-error-type)
+      (%test-runner-log-file!          runner log-file)
+      runner))))
 
 (when (not (test-runner-factory))
   (test-runner-factory test-runner-simple))

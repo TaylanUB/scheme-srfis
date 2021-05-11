@@ -219,11 +219,13 @@ SRFI-64
 
 - `test-runner-simple`: In line with the specification (and contrary
   to the reference implementation), this returns a runner that does no
-  logging and does not use its "aux value" field.
+  logging and does not use its "aux value" field.  However, it takes
+  an optional first argument that may be a file name, which tells the
+  test runner to log to that file.
 
-However, when you don't install any test runner explicitly before
-starting your test suite, a modified simple test runner is installed
-which does logging.
+*Note:* The default test runner is created by calling this procedure
+with a default file name for logging.  To explicitly disable logging,
+you can call: `(test-runner-current (test-runner-simple))`
 
 - `test-read-eval-string`: This now takes an optional `env` argument
   to specify in what environment to evaluate.  Passing `#f` will
