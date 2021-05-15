@@ -423,6 +423,9 @@
 
 (define (test-exit)
   (let ((runner (test-runner-current)))
+    (when (not runner)
+      (error "No test runner installed.  Might have been auto-removed
+by test-end if you had not installed one explicitly."))
     (if (and (zero? (test-runner-xpass-count runner))
              (zero? (test-runner-fail-count runner)))
         (exit 0)

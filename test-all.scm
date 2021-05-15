@@ -5,6 +5,8 @@
         (srfi 48)
         (srfi 64))
 
+(test-runner-current (test-runner-simple "tests.log"))
+
 (test-begin "SRFI")
 
 (for-each
