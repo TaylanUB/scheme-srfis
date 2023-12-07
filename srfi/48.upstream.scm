@@ -1,22 +1,7 @@
-;;; Copyright (C) Kenneth A Dickey (2003). All Rights Reserved.
-
-;;; Permission is hereby granted, free of charge, to any person obtaining a copy
-;;; of this software and associated documentation files (the "Software"), to
-;;; deal in the Software without restriction, including without limitation the
-;;; rights to use, copy, modify, merge, publish, distribute, sublicense, and/or
-;;; sell copies of the Software, and to permit persons to whom the Software is
-;;; furnished to do so, subject to the following conditions:
-
-;;; The above copyright notice and this permission notice shall be included in
-;;; all copies or substantial portions of the Software.
-
-;;; THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-;;; IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-;;; FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-;;; AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-;;; LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
-;;; FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
-;;; IN THE SOFTWARE.
+;;; SPDX-FileCopyrightText: 2003 Kenneth A Dickey <ken.dickey@allvantage.com>
+;;; SPDX-FileCopyrightText: 2017 Hamayama <hamay1010@gmail.com>
+;;;
+;;; SPDX-License-Identifier: MIT
 
 ;; IMPLEMENTATION DEPENDENT options
 
@@ -28,6 +13,17 @@
 (define pretty-print   write) ; ugly but permitted
 ;; (require 'srfi-38)  ;; write-with-shared-structure
 
+;; Following three procedures are used by format ~F .
+;; 'inexact-number->string' determines whether output is fixed-point
+;; notation or exponential notation. In the current definition,
+;; the notation depends on the implementation of 'number->string'.
+;; 'exact-number->string' is expected to output only numeric characters
+;; (not including such as '#', 'e', '.', '/') if the input is an positive
+;; integer or zero.
+;; 'real-number->string' is used when the digits of ~F is not specified.
+(define (inexact-number->string x) (number->string (exact->inexact x)))
+(define (exact-number->string x)   (number->string (inexact->exact x)))
+(define (real-number->string x)    (number->string x))
 
 ;; FORMAT
 (define (format . args)
@@ -45,20 +41,20 @@
            (format-string (cadr args))
            (args          (cddr args))
          )
-      (letrec ( (port 
+      (letrec ( (port
                  (cond ((output-port? output-port) output-port)
-                       ((eq? output-port #t) (current-output-port)) 
-                       ((eq? output-port #f) (open-output-string)) 
+                       ((eq? output-port #t) (current-output-port))
+                       ((eq? output-port #f) (open-output-string))
                        (else (error
                               (format #f "FORMAT: bad output-port argument: ~s"
                                       output-port)))
                 ) )
-                (return-value 
-                 (if (eq? output-port #f)    ;; if format into a string 
+                (return-value
+                 (if (eq? output-port #f)    ;; if format into a string
                      (lambda () (get-output-string port)) ;; then return the string
                      (lambda () dont-print)) ;; else do something harmless
-                 )        
-             )  
+                 )
+             )
 
          (define (string-index str c)
            (let ( (len (string-length str)) )
@@ -87,28 +83,39 @@
                               exp-str)
                )
               (else ;; must round to shrink it
-               (let* ( (first-part (substring frac-str 0 digits))
+               (let* ( (minus-flag (and (> (string-length pre-str) 0)
+                                        (char=? (string-ref pre-str 0) #\-)))
+                       (pre-str*   (if minus-flag
+                                       (substring pre-str 1 (string-length pre-str))
+                                       pre-str))
+                       (first-part (substring frac-str 0 digits))
                        (last-part  (substring frac-str digits frac-len))
                        (temp-str
-                        (number->string
-                         (round (string->number
-                                 (string-append first-part "." last-part)))))
-                       (dot-pos (string-index  temp-str #\.))
-                       (carry?
-                        (and (> dot-pos digits)
-                             (> (round (string->number
-                                        (string-append "0." frac-str)))
-                                0)))
-                       (new-frac
-                        (substring temp-str 0 digits))
+                        (string-grow
+                         (exact-number->string
+                          (round (string->number
+                                  (string-append pre-str* first-part "." last-part))))
+                         digits
+                         #\0))
+                       (temp-len   (string-length temp-str))
+                       (new-pre    (substring temp-str 0 (- temp-len digits)))
+                       (new-frac   (substring temp-str (- temp-len digits) temp-len))
                      )
                  (string-append
-                  (if carry? (number->string (+ 1 (string->number pre-str))) pre-str)
+                  (if minus-flag "-" "")
+                  (if (string=? new-pre "")
+                      ;; check if the system displays integer part of numbers
+                      ;; whose absolute value is 0 < x < 1.
+                      (if (and (string=? pre-str* "")
+                               (> digits 0)
+                               (not (= (string->number new-frac) 0)))
+                          "" "0")
+                      new-pre)
                   "."
                   new-frac
                   exp-str)))
          ) ) )
- 
+
          (define (format-fixed number-or-string width digits) ; returns a string
            (cond
             ((string? number-or-string)
@@ -129,44 +136,43 @@
                   #\space)
                  )
                 (digits
-                 (let* ( (num-str   (number->string (exact->inexact real)))
+                 (let* ( (num-str   (inexact-number->string real))
                          (dot-index (string-index  num-str #\.))
                          (exp-index (string-index  num-str #\e))
                          (length    (string-length num-str))
                          (pre-string
-                          (cond
-                           (exp-index
-                            (if dot-index
-                                (substring num-str 0 dot-index)
-                                (substring num-str 0 (+ exp-index 1)))
-                            )
-                           (dot-index
-                            (substring num-str 0 dot-index)
-                            )
-                           (else
-                            num-str))
+                          (if dot-index
+                              (substring num-str 0 dot-index)
+                              (if exp-index
+                                  (substring num-str 0 exp-index)
+                                  num-str))
                           )
                          (exp-string
-                          (if exp-index (substring num-str exp-index length) "")
+                          (if exp-index
+                              (substring num-str exp-index length)
+                              "")
                           )
                          (frac-string
-                          (if exp-index
-                              (substring num-str (+ dot-index 1) exp-index)
-                              (substring num-str (+ dot-index 1) length))
+                          (if dot-index
+                              (if exp-index
+                                  (substring num-str (+ dot-index 1) exp-index)
+                                  (substring num-str (+ dot-index 1) length))
+                              "")
                           )
                        )
-                   (string-grow
-                    (if dot-index
+                   ;; check +inf.0, -inf.0, +nan.0, -nan.0
+                   (if (string-index num-str #\n)
+                       (string-grow num-str width #\space)
+                       (string-grow
                         (compose-with-digits digits
                                              pre-string
                                              frac-string
                                              exp-string)
-                        (string-append pre-string exp-string))
-                    width
-                    #\space)
+                        width
+                        #\space))
                  ))
                 (else ;; no digits
-                 (string-grow (number->string real) width #\space)))
+                 (string-grow (real-number->string real) width #\space)))
              ))
             (else
              (error
@@ -201,25 +207,25 @@ OPTION  [MNEMONIC]      DESCRIPTION     -- Implementation Assumes ASCII Text Enc
            (if (null? args)
                (error "FORMAT: too few arguments" ))
          )
-        
+
          (define (format-help format-strg arglist)
-          
+
           (letrec (
              (length-of-format-string (string-length format-strg))
-             
-             (anychar-dispatch       
-              (lambda (pos arglist last-was-newline) 
-                (if (>= pos length-of-format-string) 
-                  arglist ; return unused args 
-                  (let ( (char (string-ref format-strg pos)) ) 
-                    (cond            
-                     ((eqv? char #\~)   
-                      (tilde-dispatch (+ pos 1) arglist last-was-newline)) 
-                     (else                   
-                      (write-char char port)     
-                      (anychar-dispatch (+ pos 1) arglist #f)        
-                      ))               
-                    ))        
+
+             (anychar-dispatch
+              (lambda (pos arglist last-was-newline)
+                (if (>= pos length-of-format-string)
+                  arglist ; return unused args
+                  (let ( (char (string-ref format-strg pos)) )
+                    (cond
+                     ((eqv? char #\~)
+                      (tilde-dispatch (+ pos 1) arglist last-was-newline))
+                     (else
+                      (write-char char port)
+                      (anychar-dispatch (+ pos 1) arglist #f)
+                      ))
+                    ))
              )) ; end anychar-dispatch
 
              (has-newline?
@@ -231,90 +237,90 @@ OPTION  [MNEMONIC]      DESCRIPTION     -- Implementation Assumes ASCII Text Enc
                                last-was-newline
                                (eqv? #\newline (string-ref whatever (- len 1)))))))
               )) ; end has-newline?
-             
-             (tilde-dispatch          
-              (lambda (pos arglist last-was-newline)     
-                (cond           
-                 ((>= pos length-of-format-string)   
+
+             (tilde-dispatch
+              (lambda (pos arglist last-was-newline)
+                (cond
+                 ((>= pos length-of-format-string)
                   (write-char #\~ port) ; tilde at end of string is just output
                   arglist ; return unused args
-                  )     
-                 (else      
-                  (case (char-upcase (string-ref format-strg pos)) 
+                  )
+                 (else
+                  (case (char-upcase (string-ref format-strg pos))
                     ((#\A)       ; Any -- for humans
                      (require-an-arg arglist)
                      (let ( (whatever (car arglist)) )
                        (display whatever port)
-                       (anychar-dispatch (+ pos 1) 
-                                         (cdr arglist) 
+                       (anychar-dispatch (+ pos 1)
+                                         (cdr arglist)
                                          (has-newline? whatever last-was-newline))
                      ))
                     ((#\S)       ; Slashified -- for parsers
                      (require-an-arg arglist)
                      (let ( (whatever (car arglist)) )
-                        (write whatever port)     
-                        (anychar-dispatch (+ pos 1) 
-                                          (cdr arglist) 
-                                          (has-newline? whatever last-was-newline)) 
+                        (write whatever port)
+                        (anychar-dispatch (+ pos 1)
+                                          (cdr arglist)
+                                          (has-newline? whatever last-was-newline))
                      ))
                     ((#\W)
                      (require-an-arg arglist)
                      (let ( (whatever (car arglist)) )
                         (write-with-shared-structure whatever port)  ;; srfi-38
-                        (anychar-dispatch (+ pos 1) 
-                                          (cdr arglist) 
+                        (anychar-dispatch (+ pos 1)
+                                          (cdr arglist)
                                           (has-newline? whatever last-was-newline))
-                     ))                           
+                     ))
                     ((#\D)       ; Decimal
                      (require-an-arg arglist)
-                     (display (number->string (car arglist) 10) port)  
-                     (anychar-dispatch (+ pos 1) (cdr arglist) #f)  
-                     )            
+                     (display (number->string (car arglist) 10) port)
+                     (anychar-dispatch (+ pos 1) (cdr arglist) #f)
+                     )
                     ((#\X)       ; HeXadecimal
                      (require-an-arg arglist)
                      (display (number->string (car arglist) 16) port)
-                     (anychar-dispatch (+ pos 1) (cdr arglist) #f)  
-                     )             
+                     (anychar-dispatch (+ pos 1) (cdr arglist) #f)
+                     )
                     ((#\O)       ; Octal
                      (require-an-arg arglist)
-                     (display (number->string (car arglist)  8) port) 
-                     (anychar-dispatch (+ pos 1) (cdr arglist) #f) 
-                     )       
+                     (display (number->string (car arglist)  8) port)
+                     (anychar-dispatch (+ pos 1) (cdr arglist) #f)
+                     )
                     ((#\B)       ; Binary
                      (require-an-arg arglist)
                      (display (number->string (car arglist)  2) port)
-                     (anychar-dispatch (+ pos 1) (cdr arglist) #f) 
-                     )           
+                     (anychar-dispatch (+ pos 1) (cdr arglist) #f)
+                     )
                     ((#\C)       ; Character
                      (require-an-arg arglist)
-                     (write-char (car arglist) port) 
-                     (anychar-dispatch (+ pos 1) (cdr arglist) (eqv? (car arglist) #\newline))  
-                     )          
-                    ((#\~)       ; Tilde  
-                     (write-char #\~ port)   
-                     (anychar-dispatch (+ pos 1) arglist #f) 
-                     )            
-                    ((#\%)       ; Newline   
-                     (newline port) 
-                     (anychar-dispatch (+ pos 1) arglist #t) 
+                     (write-char (car arglist) port)
+                     (anychar-dispatch (+ pos 1) (cdr arglist) (eqv? (car arglist) #\newline))
+                     )
+                    ((#\~)       ; Tilde
+                     (write-char #\~ port)
+                     (anychar-dispatch (+ pos 1) arglist #f)
+                     )
+                    ((#\%)       ; Newline
+                     (newline port)
+                     (anychar-dispatch (+ pos 1) arglist #t)
                      )
                     ((#\&)      ; Freshline
                      (if (not last-was-newline) ;; (unless last-was-newline ..
                          (newline port))
                      (anychar-dispatch (+ pos 1) arglist #t)
                      )
-                    ((#\_)       ; Space 
-                     (write-char #\space port)   
+                    ((#\_)       ; Space
+                     (write-char #\space port)
                      (anychar-dispatch (+ pos 1) arglist #f)
-                     )             
-                    ((#\T)       ; Tab -- IMPLEMENTATION DEPENDENT ENCODING    
-                     (write-char ascii-tab port)          
-                     (anychar-dispatch (+ pos 1) arglist #f)     
-                     )             
+                     )
+                    ((#\T)       ; Tab -- IMPLEMENTATION DEPENDENT ENCODING
+                     (write-char ascii-tab port)
+                     (anychar-dispatch (+ pos 1) arglist #f)
+                     )
                     ((#\Y)       ; Pretty-print
                      (pretty-print (car arglist) port)  ;; IMPLEMENTATION DEPENDENT
                      (anychar-dispatch (+ pos 1) (cdr arglist) #f)
-                     )              
+                     )
                     ((#\F)
                      (require-an-arg arglist)
                      (display (format-fixed (car arglist) 0 #f) port)
@@ -342,7 +348,7 @@ OPTION  [MNEMONIC]      DESCRIPTION     -- Implementation Assumes ASCII Text Enc
                                          (cons next-char d-digits)
                                          in-width?))
                                )
-                              ((char=? next-char #\F)
+                              ((char=? (char-upcase next-char) #\F)
                                (let ( (width  (string->number (list->string (reverse w-digits))))
                                       (digits (if (zero? (length d-digits))
                                                   #f
@@ -381,23 +387,23 @@ OPTION  [MNEMONIC]      DESCRIPTION     -- Implementation Assumes ASCII Text Enc
                      (display documentation-string port)
                      (anychar-dispatch (+ pos 1) arglist #t)
                      )
-                    (else                
+                    (else
                      (error (format "FORMAT: unknown tilde escape: ~s"
                                     (string-ref format-strg pos))))
                     )))
-                )) ; end tilde-dispatch   
-             ) ; end letrec            
-            
-             ; format-help main      
-             (anychar-dispatch 0 arglist #f) 
-            )) ; end format-help    
-        
+                )) ; end tilde-dispatch
+             ) ; end letrec
+
+             ; format-help main
+             (anychar-dispatch 0 arglist #f)
+            )) ; end format-help
+
         ; format main
         (let ( (unused-args (format-help format-string args)) )
           (if (not (null? unused-args))
               (error
                (format "FORMAT: unused arguments ~s" unused-args)))
           (return-value))
-                                              
+
       )) ; end letrec, if
 )))  ; end format
