@@ -1,8 +1,14 @@
+;;; SPDX-FileCopyrightText: 2014 Taylan Kammer <taylan.kammer@gmail.com>
+;;;
+;;; SPDX-License-Identifier: MIT
+
 (define-library (srfi 48)
   (export format)
-  (import
-   (scheme base)
-   (scheme char)
-   (scheme complex)
-   (scheme write))
-  (include "48.body.scm"))
+  (import (rename (scheme base)
+                  (exact inexact->exact)
+                  (inexact exact->inexact))
+          (scheme char)
+          (scheme complex)
+          (rename (scheme write)
+                  (write-shared write-with-shared-structure)))
+  (include "48.upstream.scm"))
