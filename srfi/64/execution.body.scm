@@ -410,18 +410,28 @@
          (lambda () (test-runner-current saved-runner)))))))
 
 (define (test-apply first . rest)
-  (let ((runner (if (test-runner? first)
-                    first
-                    (or (test-runner-current) (test-runner-create))))
-        (run-list (if (test-runner? first)
-                      (drop-right rest 1)
-                      (cons first (drop-right rest 1))))
-        (proc (last rest)))
-    (test-with-runner runner
-      (let ((saved-run-list (%test-runner-run-list runner)))
-        (%test-runner-run-list! runner run-list)
+  (if (test-runner? first)
+      (test-with-runner first
+        (apply %test-apply first rest))
+      (let ((runner (test-runner-current)))
+        (if runner
+            (apply %test-apply runner first rest)
+            (let ((runner (test-runner-create)))
+              (test-with-runner runner
+                (apply %test-apply runner first rest))
+              ((test-runner-on-final runner) runner))))))
+
+(define (%test-apply runner . args)
+  (when (null? args)
+    (error "No procedure supplied to test-apply."))
+  (let ((proc (last args))
+        (run-list (drop-right args 1)))
+    (if (null? run-list)
         (proc)
-        (%test-runner-run-list! runner saved-run-list)))))
+        (let ((saved-rl (%test-runner-run-list runner)))
+          (%test-runner-run-list! runner run-list)
+          (proc)
+          (%test-runner-run-list! runner saved-rl)))))
 
 
 ;;; Indicate success/failure via exit status
