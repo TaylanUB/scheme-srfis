@@ -31,6 +31,9 @@
 (define-record-type <test-runner>
   (make-test-runner) test-runner?
 
+  (group-name %test-runner-group-name %test-runner-group-name!)
+  (test-name %test-runner-test-name %test-runner-test-name!)
+
   (result-alist test-result-alist test-result-alist!)
 
   (pass-count test-runner-pass-count test-runner-pass-count!)
@@ -140,7 +143,9 @@
   (test-result-alist! runner '()))
 
 (define (test-runner-test-name runner)
-  (or (test-result-ref runner 'name) ""))
+  (or (%test-runner-test-name runner)
+      (%test-runner-group-name runner)
+      ""))
 
 (define test-result-kind
   (case-lambda

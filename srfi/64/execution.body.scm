@@ -50,6 +50,7 @@
     ((name count)
      (maybe-install-default-runner name)
      (let ((r (test-runner-current)))
+       (%test-runner-group-name! r name)
        (let ((skip-list (%test-runner-skip-list r))
              (skip-save (%test-runner-skip-save r))
              (fail-list (%test-runner-fail-list r))
@@ -73,7 +74,6 @@
      (let* ((r (test-runner-get))
             (groups (test-runner-group-stack r))
             (begin-name (car groups)))
-       (test-result-clear r)
        (when (null? groups)
          (error "test-end not in a group"))
        (when (not (equal? begin-name end-name))
@@ -95,6 +95,7 @@
          ;; If this is the end of a nested group, the whole group counts as one
          ;; test, so increment saved count by one while restoring.
          (%test-runner-total-count! r (+ 1 saved-count))
+         (%test-runner-group-name! r #f)
          (when (null? (test-runner-group-stack r))
            ((test-runner-on-final r) r)
            (maybe-uninstall-default-runner)))))))
@@ -107,14 +108,11 @@
 (define (%test-group name thunk)
   (begin
     (maybe-install-default-runner name)
-    (let ((runner (test-runner-get)))
-      (test-result-clear runner)
-      (test-result-set! runner 'name name)
-      (unless (test-skip? runner)
-        (dynamic-wind
+    (unless (test-skip? (test-runner-current))
+      (dynamic-wind
           (lambda () (test-begin name))
           thunk
-          (lambda () (test-end name)))))))
+          (lambda () (test-end name))))))
 
 (define-syntax test-group-with-cleanup
   (syntax-rules ()
@@ -212,6 +210,7 @@
        <expression>))))
 
 (define (test-prelude source-info runner name form)
+  (%test-runner-test-name! runner name)
   (test-result-clear runner)
   (set-source-info! runner source-info)
   (when name
@@ -241,7 +240,8 @@
       ((skip)
        (test-runner-skip-count! runner (+ 1 (test-runner-skip-count runner)))))
     (%test-runner-total-count! runner (+ 1 (%test-runner-total-count runner)))
-    ((test-runner-on-test-end runner) runner)))
+    ((test-runner-on-test-end runner) runner)
+    (%test-runner-test-name! runner #f)))
 
 (define (set-result-kind! runner pass?)
   (test-result-set! runner 'result-kind
