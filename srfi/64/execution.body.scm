@@ -58,13 +58,13 @@
              (total-count (%test-runner-total-count r))
              (count-list (%test-runner-count-list r))
              (group-stack (test-runner-group-stack r)))
-         ((test-runner-on-group-begin r) r name count)
          (%test-runner-skip-save! r (cons skip-list skip-save))
          (%test-runner-fail-save! r (cons fail-list fail-save))
          (%test-runner-count-list! r (cons (cons total-count count)
                                            count-list))
          (%test-runner-total-count! r 0)
-         (test-runner-group-stack! r (cons name group-stack)))))))
+         (test-runner-group-stack! r (cons name group-stack))
+         ((test-runner-on-group-begin r) r name count))))))
 
 (define test-end
   (case-lambda

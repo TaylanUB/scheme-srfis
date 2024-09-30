@@ -227,6 +227,20 @@ SRFI-64
 with a default file name for logging.  To explicitly disable logging,
 you can call: `(test-runner-current (test-runner-simple))`
 
+- The reference implementation calls the on-group-begin handler before
+  it modifies the group stack, and before it sets the group name, so
+  calling `test-runner-group-stack`, `test-runner-group-path`, or
+  `test-runner-test-name` will return values corresponding to *before*
+  the new group begins. Our implementation calls the handler *after*
+  these values are changed. The specification is unclear about which
+  behavior is correct, but includes the following wording in the
+  definition of `test-runner-test-name`: "During execution of
+  test-begin this is the name of the test group."  It seems logical
+  that the on-group-begin handler would be called "during" test-begin,
+  so our behavior is arguably more in line with the spec. And the
+  group stack should intuitively always have the current name as the
+  topmost value.
+
 - `test-read-eval-string`: This now takes an optional `env` argument
   to specify in what environment to evaluate.  Passing `#f` will
   explicitly attempt to call `eval` with a single argument, which is
