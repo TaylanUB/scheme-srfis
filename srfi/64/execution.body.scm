@@ -62,6 +62,7 @@
          (%test-runner-fail-save! r (cons fail-list fail-save))
          (%test-runner-count-list! r (cons (cons total-count count)
                                            count-list))
+         (%test-runner-total-count! r 0)
          (test-runner-group-stack! r (cons name group-stack)))))))
 
 (define test-end
@@ -80,10 +81,10 @@
        (let* ((count-list (%test-runner-count-list r))
               (expected-count (cdar count-list))
               (saved-count (caar count-list))
-              (group-count (- (%test-runner-total-count r) saved-count)))
+              (total-count (%test-runner-total-count r)))
          (when (and expected-count
-                    (not (= expected-count group-count)))
-           ((test-runner-on-bad-count r) r group-count expected-count))
+                    (not (= expected-count total-count)))
+           ((test-runner-on-bad-count r) r total-count expected-count))
          ((test-runner-on-group-end r) r)
          (test-runner-group-stack! r (cdr (test-runner-group-stack r)))
          (%test-runner-skip-list! r (car (%test-runner-skip-save r)))
@@ -91,6 +92,9 @@
          (%test-runner-fail-list! r (car (%test-runner-fail-save r)))
          (%test-runner-fail-save! r (cdr (%test-runner-fail-save r)))
          (%test-runner-count-list! r (cdr count-list))
+         ;; If this is the end of a nested group, the whole group counts as one
+         ;; test, so increment saved count by one while restoring.
+         (%test-runner-total-count! r (+ 1 saved-count))
          (when (null? (test-runner-group-stack r))
            ((test-runner-on-final r) r)
            (maybe-uninstall-default-runner)))))))
