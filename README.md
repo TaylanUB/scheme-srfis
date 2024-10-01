@@ -228,18 +228,19 @@ with a default file name for logging.  To explicitly disable logging,
 you can call: `(test-runner-current (test-runner-simple))`
 
 - The reference implementation calls the on-group-begin handler before
-  it modifies the group stack, and before it sets the group name, so
-  calling `test-runner-group-stack`, `test-runner-group-path`, or
-  `test-runner-test-name` will return values corresponding to *before*
-  the new group begins. Our implementation calls the handler *after*
-  these values are changed. The specification is unclear about which
-  behavior is correct, but includes the following wording in the
-  definition of `test-runner-test-name`: "During execution of
-  test-begin this is the name of the test group."  It seems logical
-  that the on-group-begin handler would be called "during" test-begin,
-  so our behavior is arguably more in line with the spec. And the
-  group stack should intuitively always have the current name as the
-  topmost value.
+  modifying the group stack and setting the group name.  This means
+  that calling `test-runner-group-stack`, `test-runner-group-path`, or
+  `test-runner-test-name` from within the on-group-begin handler will
+  return values corresponding to *before* the new group begins.  Our
+  implementation calls the handler *after* those values are changed
+  instead, so calling those procedures from within the on-group-begin
+  handler will return the new values.  The spec is unclear on which
+  behavior is correct, but says the following in the definition of
+  `test-runner-test-name`: "During execution of test-begin this is the
+  name of the test group."  It seems logical that the on-group-begin
+  handler would be called "during" test-begin, so our behavior is
+  arguably more in line with the spec.  And the group stack should
+  intuitively always have the current name as the topmost value.
 
 - The `test-apply` of the reference implementation doesn't always call
   the on-final handler of the test runner it's given.  It's unclear
