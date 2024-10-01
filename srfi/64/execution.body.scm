@@ -404,11 +404,12 @@
 
 (define-syntax test-with-runner
   (syntax-rules ()
-    ((_ <runner> <body> . <body>*)
+    ((_ <runner>) (if #f #f))
+    ((_ <runner> <body> ...)
      (let ((saved-runner (test-runner-current)))
        (dynamic-wind
          (lambda () (test-runner-current <runner>))
-         (lambda () <body> . <body>*)
+         (lambda () <body> ...)
          (lambda () (test-runner-current saved-runner)))))))
 
 (define (test-apply first . rest)
