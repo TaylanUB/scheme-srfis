@@ -421,8 +421,7 @@
             (apply %test-apply runner first rest)
             (let ((runner (test-runner-create)))
               (test-with-runner runner
-                (apply %test-apply runner first rest))
-              ((test-runner-on-final runner) runner))))))
+                (apply %test-apply runner first rest)))))))
 
 (define (%test-apply runner . args)
   (when (null? args)
@@ -434,7 +433,8 @@
         (let ((saved-rl (%test-runner-run-list runner)))
           (%test-runner-run-list! runner run-list)
           (proc)
-          (%test-runner-run-list! runner saved-rl)))))
+          (%test-runner-run-list! runner saved-rl))))
+  ((test-runner-on-final runner) runner))
 
 
 ;;; Indicate success/failure via exit status

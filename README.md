@@ -241,6 +241,11 @@ you can call: `(test-runner-current (test-runner-simple))`
   group stack should intuitively always have the current name as the
   topmost value.
 
+- The `test-apply` of the reference implementation doesn't always call
+  the on-final handler of the test runner it's given.  It's unclear
+  whether this is intended, but seems arbitrary and likely a bug.  Our
+  implementation always calls the on-final handler.
+
 - `test-read-eval-string`: This now takes an optional `env` argument
   to specify in what environment to evaluate.  Passing `#f` will
   explicitly attempt to call `eval` with a single argument, which is
