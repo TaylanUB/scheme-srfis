@@ -42,19 +42,31 @@
  (kawa
   (module-compile-options warn-undefined-variable: #t
 			  warn-invoke-unknown-method: #t)
+  (import (scheme base)
+          (only (kawa base) try-catch))
   (provide 'srfi-64)
   (provide 'testing)
-  (require 'srfi-34)
   (require 'srfi-35))
- (else ()
+ (gauche
+  (define-module srfi-64)
+  (select-module srfi-64))
+ (else
   ))
 
 (cond-expand
  (kawa
+  ;; Kawa's default top-level environment has test-begin built in,
+  ;; as a magic macro that imports this library (without test-begin).
+  ;; This puts test-begin but only test-begin in the default environment,
+  ;; which makes normal test suites loadable without non-portable commands.
+  ;; Therefore we need to export %test-begin, which performs the
+  ;; functionality of test-begin without the magic import.
   (define-syntax %test-export
     (syntax-rules ()
       ((%test-export test-begin . other-names)
-       (module-export %test-begin . other-names)))))
+       (module-export %test-begin test-begin . other-names)))))
+ (gauche
+  (define-syntax %test-export export))
  (else
   (define-syntax %test-export
     (syntax-rules ()
@@ -102,16 +114,16 @@
  (srfi-9
   (define-syntax %test-record-define
     (syntax-rules ()
-      ((%test-record-define alloc runner? (name index setter getter) ...)
-       (define-record-type test-runner
+      ((%test-record-define tname alloc runner? (name index getter setter) ...)
+       (define-record-type tname
 	 (alloc)
 	 runner?
-	 (name setter getter) ...)))))
+	 (name getter setter) ...)))))
  (else
   (define %test-runner-cookie (list "test-runner"))
   (define-syntax %test-record-define
     (syntax-rules ()
-      ((%test-record-define alloc runner? (name index getter setter) ...)
+      ((%test-record-define tname alloc runner? (name index getter setter) ...)
        (begin
 	 (define (runner? obj)
 	   (and (vector? obj)
@@ -128,7 +140,7 @@
 	   (define (setter runner value)
 	     (vector-set! runner index value)) ...)))))))
 
-(%test-record-define
+(%test-record-define test-runner
  %test-runner-alloc test-runner?
  ;; Cumulate count of all tests that have passed and were expected to.
  (pass-count 1 test-runner-pass-count test-runner-pass-count!)
@@ -235,13 +247,21 @@
        (set! %test-runner-factory runner))))))
 
 ;; A safer wrapper to test-runner-current.
-(define (test-runner-get)
-  (let ((r (test-runner-current)))
-    (if (not r)
-	(cond-expand
-	 (srfi-23 (error "test-runner not initialized - test-begin missing?"))
-	 (else #t)))
-    r))
+(cond-expand
+ (kawa
+  (define (test-runner-get) ::test-runner
+    (let ((r (test-runner-current)))
+      (if (not r)
+          (error "test-runner not initialized - test-begin missing?"))
+      r)))
+ (else
+  (define (test-runner-get)
+    (let ((r (test-runner-current)))
+      (if (not r)
+          (cond-expand
+           (srfi-23 (error "test-runner not initialized - test-begin missing?"))
+           (else #t)))
+      r))))
 
 (define (%test-specifier-matches spec runner)
   (spec runner))
@@ -278,7 +298,11 @@
 
 (define (%test-begin suite-name count)
   (if (not (test-runner-current))
-      (test-runner-current (test-runner-create)))
+      (let ((r (test-runner-create)))
+	(test-runner-current r)
+	(test-runner-on-final! r
+	  (let ((old-final (test-runner-on-final r)))
+	    (lambda (r) (old-final r) (test-runner-current #f))))))
   (let ((runner (test-runner-current)))
     ((test-runner-on-group-begin runner) runner suite-name count)
     (%test-runner-skip-save! runner
@@ -293,22 +317,12 @@
 				   (%test-runner-count-list runner)))
     (test-runner-group-stack! runner (cons suite-name
 					(test-runner-group-stack runner)))))
-(cond-expand
- (kawa
-  ;; Kawa has test-begin built in, implemented as:
-  ;; (begin
-  ;;   (cond-expand (srfi-64 #!void) (else (require 'srfi-64)))
-  ;;   (%test-begin suite-name [count]))
-  ;; This puts test-begin but only test-begin in the default environment.,
-  ;; which makes normal test suites loadable without non-portable commands.
-  )
- (else
-  (define-syntax test-begin
-    (syntax-rules ()
-      ((test-begin suite-name)
-       (%test-begin suite-name #f))
-      ((test-begin suite-name count)
-       (%test-begin suite-name count))))))
+(define-syntax test-begin
+  (syntax-rules ()
+    ((test-begin suite-name)
+     (%test-begin suite-name #f))
+    ((test-begin suite-name count)
+     (%test-begin suite-name count))))
 
 (define (test-on-group-begin-simple runner suite-name count)
   (if (null? (test-runner-group-stack runner))
@@ -316,9 +330,30 @@
 	(display "%%%% Starting test ")
 	(display suite-name)
 	(if test-log-to-file
-	    (let* ((log-file-name
-		    (if (string? test-log-to-file) test-log-to-file
-			(string-append suite-name ".log")))
+	    (let* ((log-name (if (string? test-log-to-file) test-log-to-file
+                                 (string-append suite-name ".log")))
+                   ;; Replace "bad" characters in log file name with #\_
+                   (fix-invalid-char
+                    (lambda (ch)
+                      (if (or (char-alphabetic? ch)
+                              (char-numeric? ch)
+                              (char=? ch #\Space)
+                              (char=? ch #\-)
+                              (char=? ch #\+)
+                              (char=? ch #\_)
+                              (char=? ch #\.)
+                              (char=? ch #\,))
+                          ch
+                          #\_)))
+                   (log-file-name
+                    (cond-expand (r7rs
+                                  (string-map fix-invalid-char log-name))
+                                 (else
+                                  (let ((t (string-copy log-name))
+                                        (tlen (string-length log-name)))
+                                    (do ((i 0 (+ i 1))) ((>= i tlen) t)
+                                      (string-set! t i (fix-invalid-char
+                                                        (string-ref t i))))))))
 		   (log-file
 		    (cond-expand (mzscheme
 				  (open-output-file log-file-name 'truncate/replace))
@@ -439,7 +474,10 @@
 (define-syntax test-group
   (syntax-rules ()
     ((test-group suite-name . body)
-     (let ((r (test-runner-current)))
+     (let ((r (or (test-runner-current)
+                  (begin
+                   (test-runner-current (test-runner-create))
+                   (test-runner-current)))))
        ;; Ideally should also set line-number, if available.
        (test-result-alist! r (list (cons 'test-name suite-name)))
        (if (%test-should-execute r)
@@ -530,6 +568,12 @@
     (if p
 	(set-cdr! p value)
 	(test-result-alist! runner (cons (cons pname value) alist)))))
+
+(define (test-result-actual-value! runner value)
+  (test-result-set! runner 'actual-value value))
+
+(define (test-result-expected-value! runner value)
+  (test-result-set! runner 'expected-value value))
 
 (define (test-result-clear runner)
   (test-result-alist! runner '()))
@@ -660,9 +704,9 @@
 		 (let ()
 		   (if (%test-on-test-begin r)
 		       (let ((exp expected))
-			 (test-result-set! r 'expected-value exp)
+			 (test-result-expected-value! r exp)
 			 (let ((res (%test-evaluate-with-catch expr)))
-			   (test-result-set! r 'actual-value res)
+			   (test-result-actual-value! r res)
 			   (%test-on-test-end r (comp exp res)))))
 		   (%test-report-result)))))
 
@@ -684,7 +728,7 @@
        (if (%test-on-test-begin r)
 	   (let ()
 	     (let ((res (%test-evaluate-with-catch expr)))
-	       (test-result-set! r 'actual-value res)
+	       (test-result-actual-value! r res)
 	       (%test-on-test-end r res))))
        (%test-report-result)))))
 
@@ -807,7 +851,7 @@
                 (%test-on-test-end r
                                    (catch #t
                                      (lambda ()
-                                       (test-result-set! r 'actual-value expr)
+                                       (test-result-actual-value! r expr)
                                        #f)
                                      (lambda (key . args)
                                        ;; TODO: decide how to specify expected
@@ -838,7 +882,7 @@
 	      (%test-on-test-end r
 				 (try-catch
 				  (let ()
-				    (test-result-set! r 'actual-value expr)
+				    (test-result-actual-value! r expr)
 				    #f)
 				  (ex <java.lang.Throwable>
 				      (test-result-set! r 'actual-error ex)
@@ -851,7 +895,7 @@
 	     (%test-on-test-end r
 				(try-catch
 				 (let ()
-				   (test-result-set! r 'actual-value expr)
+				   (test-result-actual-value! r expr)
 				   #f)
 				 (ex <java.lang.Throwable>
 				     (test-result-set! r 'actual-error ex)
@@ -924,6 +968,15 @@
          (test-result-alist! r '())
          (%test-error r #t expr)))))))
 
+(define-syntax test-with-runner
+  (syntax-rules ()
+    ((test-with-runner runner form ...)
+     (let ((saved-runner (test-runner-current)))
+       (dynamic-wind
+           (lambda () (test-runner-current runner))
+           (lambda () form ...)
+           (lambda () (test-runner-current saved-runner)))))))
+
 (define (test-apply first . rest)
   (if (test-runner? first)
       (test-with-runner first (apply test-apply rest))
@@ -942,15 +995,6 @@
 	    (let ((r (test-runner-create)))
 	      (test-with-runner r (apply test-apply first rest))
 	      ((test-runner-on-final r) r))))))
-
-(define-syntax test-with-runner
-  (syntax-rules ()
-    ((test-with-runner runner form ...)
-     (let ((saved-runner (test-runner-current)))
-       (dynamic-wind
-           (lambda () (test-runner-current runner))
-           (lambda () form ...)
-           (lambda () (test-runner-current saved-runner)))))))
 
 ;;; Predicates
 
@@ -1033,6 +1077,7 @@
     (if (eof-object? (read-char port))
 	(cond-expand
 	 (guile (eval form (current-module)))
+         (gauche (eval form ((with-module gauche.internal vm-current-module))))
 	 (else (eval form)))
 	(cond-expand
 	 (srfi-23 (error "(not at eof)"))
