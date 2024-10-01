@@ -126,10 +126,11 @@
 ;;; Skipping, expected-failing, matching
 
 (define (test-skip . specs)
-  (let ((runner (test-runner-get)))
-    (%test-runner-skip-list!
-     runner (cons (apply test-match-all specs)
-                  (%test-runner-skip-list runner)))))
+  (let* ((runner (test-runner-get))
+         (skip-list (%test-runner-skip-list runner))
+         (new-specs (apply test-match-all specs))
+         (new-skip-list (cons new-specs skip-list)))
+    (%test-runner-skip-list! runner new-skip-list)))
 
 (define (test-skip? runner)
   (let ((run-list (%test-runner-run-list runner))
@@ -138,10 +139,11 @@
         (any-pred skip-list runner))))
 
 (define (test-expect-fail . specs)
-  (let ((runner (test-runner-get)))
-    (%test-runner-fail-list!
-     runner (cons (apply test-match-all specs)
-                  (%test-runner-fail-list runner)))))
+  (let* ((runner (test-runner-get))
+         (fail-list (%test-runner-fail-list runner))
+         (new-specs (apply test-match-all specs))
+         (new-fail-list (cons new-specs fail-list)))
+    (%test-runner-fail-list! runner new-fail-list)))
 
 (define (test-match-any . specs)
   (let ((preds (map make-pred specs)))
