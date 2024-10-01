@@ -427,7 +427,7 @@
   (when (null? args)
     (error "No procedure supplied to test-apply."))
   (let ((proc (last args))
-        (run-list (drop-right args 1)))
+        (run-list (map make-pred (drop-right args 1))))
     (if (null? run-list)
         (proc)
         (let ((saved-rl (%test-runner-run-list runner)))
