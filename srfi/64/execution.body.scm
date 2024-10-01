@@ -76,7 +76,7 @@
             (begin-name (car groups)))
        (when (null? groups)
          (error "test-end not in a group"))
-       (when (not (equal? begin-name end-name))
+       (when (and end-name (not (equal? begin-name end-name)))
          ((test-runner-on-bad-end-name r) r begin-name end-name))
        (let* ((count-list (%test-runner-count-list r))
               (expected-count (cdar count-list))
