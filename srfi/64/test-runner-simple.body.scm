@@ -83,7 +83,7 @@
   (test-runner-factory test-runner-simple))
 
 (define (test-on-group-begin-simple runner name count)
-  (when (null? (test-runner-group-stack runner))
+  (when (null? (cdr (test-runner-group-stack runner)))
     (maybe-start-logging runner)
     (print runner "Test suite begin: ~a~%" name)))
 
