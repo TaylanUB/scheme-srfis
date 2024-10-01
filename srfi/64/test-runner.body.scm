@@ -84,6 +84,8 @@
   (reverse (test-runner-group-stack runner)))
 
 (define (test-runner-reset runner)
+  ;; Note: We don't reset the run-list here.  It's an implementation detail,
+  ;; only used by test-apply, and shouldn't be possible to clear explicitly.
   (test-result-alist! runner '())
   (test-runner-pass-count! runner 0)
   (test-runner-fail-count! runner 0)
@@ -92,7 +94,6 @@
   (test-runner-skip-count! runner 0)
   (%test-runner-total-count! runner 0)
   (%test-runner-count-list! runner '())
-  (%test-runner-run-list! runner #f)
   (%test-runner-skip-list! runner '())
   (%test-runner-fail-list! runner '())
   (%test-runner-skip-save! runner '())
@@ -111,6 +112,7 @@
     (test-runner-on-bad-count! runner test-null-callback)
     (test-runner-on-bad-end-name! runner test-null-callback)
     (%test-runner-on-bad-error-type! runner test-null-callback)
+    (%test-runner-run-list! runner #f)
     (%test-runner-auto-installed! runner #f)
     (%test-runner-log-file! runner #f)
     (%test-runner-log-port! runner #f)

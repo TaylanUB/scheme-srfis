@@ -67,7 +67,6 @@
     (test-runner-simple #f))
    ((log-file)
     (let ((runner (test-runner-null)))
-      (test-runner-reset runner)
       (test-runner-on-group-begin!     runner test-on-group-begin-simple)
       (test-runner-on-group-end!       runner test-on-group-end-simple)
       (test-runner-on-final!           runner test-on-final-simple)
