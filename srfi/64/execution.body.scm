@@ -50,7 +50,6 @@
     ((name count)
      (maybe-install-default-runner name)
      (let ((r (test-runner-current)))
-       (%test-runner-group-name! r name)
        (let ((skip-list (%test-runner-skip-list r))
              (skip-save (%test-runner-skip-save r))
              (fail-list (%test-runner-fail-list r))
@@ -95,7 +94,6 @@
          ;; If this is the end of a nested group, the whole group counts as one
          ;; test, so increment saved count by one while restoring.
          (%test-runner-total-count! r (+ 1 saved-count))
-         (%test-runner-group-name! r #f)
          (when (null? (test-runner-group-stack r))
            ((test-runner-on-final r) r)
            (maybe-uninstall-default-runner)))))))
@@ -213,6 +211,7 @@
 
 (define (test-prelude source-info runner name form)
   (%test-runner-test-name! runner name)
+  (%test-runner-in-test! runner #t)
   (test-result-clear runner)
   (set-source-info! runner source-info)
   (when name
@@ -243,7 +242,7 @@
        (test-runner-skip-count! runner (+ 1 (test-runner-skip-count runner)))))
     (%test-runner-total-count! runner (+ 1 (%test-runner-total-count runner)))
     ((test-runner-on-test-end runner) runner)
-    (%test-runner-test-name! runner #f)))
+    (%test-runner-in-test! runner #f)))
 
 (define (set-result-kind! runner pass?)
   (test-result-set! runner 'result-kind

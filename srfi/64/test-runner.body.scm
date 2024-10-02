@@ -31,8 +31,8 @@
 (define-record-type <test-runner>
   (make-test-runner) test-runner?
 
-  (group-name %test-runner-group-name %test-runner-group-name!)
   (test-name %test-runner-test-name %test-runner-test-name!)
+  (in-test %test-runner-in-test? %test-runner-in-test!)
 
   (result-alist test-result-alist test-result-alist!)
 
@@ -145,9 +145,10 @@
   (test-result-alist! runner '()))
 
 (define (test-runner-test-name runner)
-  (or (%test-runner-test-name runner)
-      (%test-runner-group-name runner)
-      ""))
+  (or (test-runner-name-override)
+      (if (%test-runner-in-test? runner)
+          (or (%test-runner-test-name runner) "")
+          (or (car (test-runner-group-stack runner)) ""))))
 
 (define test-result-kind
   (case-lambda
