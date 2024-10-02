@@ -105,17 +105,16 @@
 
 (define (%test-group name thunk)
   (maybe-install-default-runner name)
-  ;; Force name to be the given one, so name-based matching works.
-  (if (parameterize ((test-runner-name-override name)) (test-skip?))
-      (let* ((runner (test-runner-current))
-             (skip-count (test-runner-skip-count runner))
-             (total-count (%test-runner-total-count runner)))
-        (test-runner-skip-count! runner (+ 1 skip-count))
-        (%test-runner-total-count! runner (+ 1 total-count)))
-      (dynamic-wind
-          (lambda () (test-begin name))
-          thunk
-          (lambda () (test-end name)))))
+  (let ((runner (test-runner-current)))
+    ;; Force name to be the given one, so name-based matching works.
+    (if (parameterize ((test-runner-name-override name)) (test-skip? runner))
+        (begin
+          (test-runner-skip-count-inc! runner)
+          (%test-runner-total-count-inc! runner))
+        (dynamic-wind
+            (lambda () (test-begin name))
+            thunk
+            (lambda () (test-end name))))))
 
 (define-syntax test-group-with-cleanup
   (syntax-rules ()
@@ -135,14 +134,11 @@
          (new-skip-list (cons new-specs skip-list)))
     (%test-runner-skip-list! runner new-skip-list)))
 
-(define test-skip?
-  (case-lambda
-   (() (test-skip? (test-runner-current)))
-   ((runner)
-    (let ((run-list (%test-runner-run-list runner))
-          (skip-list (%test-runner-skip-list runner)))
-      (or (and run-list (not (any-pred run-list runner)))
-          (any-pred skip-list runner))))))
+(define (test-skip? runner)
+  (let ((run-list (%test-runner-run-list runner))
+        (skip-list (%test-runner-skip-list runner)))
+    (or (and run-list (not (any-pred run-list runner)))
+        (any-pred skip-list runner))))
 
 (define (test-expect-fail . specs)
   (let* ((runner (test-runner-get))
@@ -238,17 +234,12 @@
 (define (test-postlude runner)
   (let ((result-kind (test-result-kind runner)))
     (case result-kind
-      ((pass)
-       (test-runner-pass-count! runner (+ 1 (test-runner-pass-count runner))))
-      ((fail)
-       (test-runner-fail-count! runner (+ 1 (test-runner-fail-count runner))))
-      ((xpass)
-       (test-runner-xpass-count! runner (+ 1 (test-runner-xpass-count runner))))
-      ((xfail)
-       (test-runner-xfail-count! runner (+ 1 (test-runner-xfail-count runner))))
-      ((skip)
-       (test-runner-skip-count! runner (+ 1 (test-runner-skip-count runner)))))
-    (%test-runner-total-count! runner (+ 1 (%test-runner-total-count runner)))
+      ((pass) (test-runner-pass-count-inc! runner))
+      ((fail) (test-runner-fail-count-inc! runner))
+      ((xpass) (test-runner-xpass-count-inc! runner))
+      ((xfail) (test-runner-xfail-count-inc! runner))
+      ((skip) (test-runner-skip-count-inc! runner)))
+    (%test-runner-total-count-inc! runner)
     ((test-runner-on-test-end runner) runner)
     (%test-runner-in-test! runner #f)))
 

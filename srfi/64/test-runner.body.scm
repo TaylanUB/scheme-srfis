@@ -163,6 +163,24 @@
     (() (test-passed? (test-runner-get)))
     ((runner) (memq (test-result-kind runner) '(pass xpass)))))
 
+(define (test-runner-pass-count-inc! runner)
+  (test-runner-pass-count! runner (+ 1 (test-runner-pass-count runner))))
+
+(define (test-runner-fail-count-inc! runner)
+  (test-runner-fail-count! runner (+ 1 (test-runner-fail-count runner))))
+
+(define (test-runner-xpass-count-inc! runner)
+  (test-runner-xpass-count! runner (+ 1 (test-runner-xpass-count runner))))
+
+(define (test-runner-xfail-count-inc! runner)
+  (test-runner-xfail-count! runner (+ 1 (test-runner-xfail-count runner))))
+
+(define (test-runner-skip-count-inc! runner)
+  (test-runner-skip-count! runner (+ 1 (test-runner-skip-count runner))))
+
+(define (%test-runner-total-count-inc! runner)
+  (%test-runner-total-count! runner (+ 1 (%test-runner-total-count runner))))
+
 
 ;;; Factory and current instance
 
