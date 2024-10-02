@@ -8,6 +8,8 @@
 ;;;  SRFI-64, A Scheme API for test suites
 ;;;
 
+(test-runner-current (test-runner-simple))
+
 (test-begin "SRFI 64 - Meta-Test Suite")
 
 ;;;
