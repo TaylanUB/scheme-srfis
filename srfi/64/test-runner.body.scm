@@ -144,6 +144,9 @@
 (define (test-result-clear runner)
   (test-result-alist! runner '()))
 
+;; This is for a hack to make test-group play nice with test-skip.
+(define test-runner-name-override (make-parameter #f))
+
 (define (test-runner-test-name runner)
   (or (test-runner-name-override)
       (if (%test-runner-in-test? runner)

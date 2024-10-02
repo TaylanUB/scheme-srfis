@@ -605,7 +605,6 @@
     (test-end "b")
     (test-end "a"))))
 
-(test-expect-fail 1) ;; ???
 (test-equal
  "6.4.3.2. Introduced using 'test-group'"
  '(() () () () () (0 0 0 0 1))

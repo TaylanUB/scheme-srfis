@@ -104,13 +104,18 @@
      (%test-group <name> (lambda () <body> . <body>*)))))
 
 (define (%test-group name thunk)
-  (begin
-    (maybe-install-default-runner name)
-    (unless (test-skip? (test-runner-current))
+  (maybe-install-default-runner name)
+  ;; Force name to be the given one, so name-based matching works.
+  (if (parameterize ((test-runner-name-override name)) (test-skip?))
+      (let* ((runner (test-runner-current))
+             (skip-count (test-runner-skip-count runner))
+             (total-count (%test-runner-total-count runner)))
+        (test-runner-skip-count! runner (+ 1 skip-count))
+        (%test-runner-total-count! runner (+ 1 total-count)))
       (dynamic-wind
           (lambda () (test-begin name))
           thunk
-          (lambda () (test-end name))))))
+          (lambda () (test-end name)))))
 
 (define-syntax test-group-with-cleanup
   (syntax-rules ()
@@ -130,11 +135,14 @@
          (new-skip-list (cons new-specs skip-list)))
     (%test-runner-skip-list! runner new-skip-list)))
 
-(define (test-skip? runner)
-  (let ((run-list (%test-runner-run-list runner))
-        (skip-list (%test-runner-skip-list runner)))
-    (or (and run-list (not (any-pred run-list runner)))
-        (any-pred skip-list runner))))
+(define test-skip?
+  (case-lambda
+   (() (test-skip? (test-runner-current)))
+   ((runner)
+    (let ((run-list (%test-runner-run-list runner))
+          (skip-list (%test-runner-skip-list runner)))
+      (or (and run-list (not (any-pred run-list runner)))
+          (any-pred skip-list runner))))))
 
 (define (test-expect-fail . specs)
   (let* ((runner (test-runner-get))
